@@ -9,12 +9,12 @@ CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -Os
 LDFLAGS          = -mmcu=atmega328p
 
 # Flags for avrdude
-UPLOAD_PROTOCOL  = arduino                # Change this according to your programmer
-UPLOAD_PORT      = COM4                   # Change this to your programming port (e.g., COM3)
-UPLOAD_BAUD      = 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       = 000pilot_example.lss      # Target in .lss format
-TARGET_HEX       = 000pilot_example.hex      # Target in .hex format
-TARGET_ELF       = 000pilot_example.elf      # Target in .elf format
+UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
+UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
+UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
+TARGET_LSS       ?= 001led_toggle.lss      # Target in .lss format
+TARGET_HEX       ?= 001led_toggle.hex      # Target in .hex format
+TARGET_ELF       ?= 001led_toggle.elf      # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -78,7 +78,7 @@ $(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c
 	@echo "Build complete: 002led_button.elf"
 
 # Deploy the program to the microcontroller
-deploy: $(TARGET_ELF) $(TARGET_LSS)
+deploy: clean $(TARGET_ELF) $(TARGET_LSS)
 	@echo "Deploying $(TARGET_HEX) to microcontroller..."
 	$(AVRDUDE) -p atmega328p -c $(UPLOAD_PROTOCOL) -P $(UPLOAD_PORT) -b $(UPLOAD_BAUD) -U flash:w:$(TARGET_HEX):i
 	@echo "Deployment process finished."
