@@ -3,7 +3,14 @@
  *
  * Created: 30/09/2024 21:58:10
  * Author : JESUS HUMBERTO ONTIVEROS MAYORQUIN
+ *
+ * Description:
+ * This example demonstrates a simple GPIO application where a LED connected to pin PB5
+ * toggles its state (ON/OFF) at regular intervals. The LED is configured as an output, 
+ * and a delay function is used to create a visible blinking effect.
+ *
  */ 
+ 
 #include "atmega328p_gpio.h"
 
 void delay(void)
