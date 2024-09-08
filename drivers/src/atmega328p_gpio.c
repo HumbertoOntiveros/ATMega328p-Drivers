@@ -39,10 +39,7 @@ void GPIO_Init(GPIO_t PORTX)
     *PORTX.GPIOX.PORT |= PORTX.GPIO_Pin.Mode ? \
                             ~(1 << PORTX.GPIO_Pin.Number): \
                             (PORTX.GPIO_Pin.PullUp << PORTX.GPIO_Pin.Number);
-    /*
-    //DDRB |= (1<<DDB5);
-    *PORTX.GPIOX.DDR |= (1 << PORTX.GPIO_Pin.Number);
-    */
+
 }
 
 /*********************************************************************
@@ -131,7 +128,4 @@ void GPIO_TogglePin(GPIO_t PORTX)
         // If it is not an output, do nothing
         (void)0;
         
-    /*
-    *PORTX.GPIOX.PORT ^= (1<<PORTX.GPIO_Pin.Number);
-    */
 }

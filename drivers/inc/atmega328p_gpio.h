@@ -74,7 +74,4 @@ uint8_t GPIO_ReadPin(GPIO_t PORTX);
 void GPIO_WritePin(GPIO_t PORTX, uint8_t Value);
 void GPIO_TogglePin(GPIO_t PORTX);
 
-//uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
-//void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
-
 #endif // __ATMEGA328P_GPIO_H__
