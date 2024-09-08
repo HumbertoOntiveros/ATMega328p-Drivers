@@ -1,21 +1,77 @@
-#ifndef ATMEGA328P_GPIO_H
-#define ATMEGA328P_GPIO_H
+#ifndef __ATMEGA328P_GPIO_H__
+#define __ATMEGA328P_GPIO_H__
 
-// Pin, port, and other GPIO-related constants definitions
-#define GPIO_PIN0 0
-#define GPIO_PIN1 1
-#define GPIO_PIN2 2
-// Add more pin definitions as needed
+#include "atmega328p.h"
 
-// Function to configure a pin as input or output
-void GPIO_config(uint8_t pin, uint8_t direction);
+/*
+ * Configuration structure for a GPIO pin
+ */
+typedef struct
+{
+    uint8_t Number; /*!< possible values from @GPIO_PIN_NUMBERS         >*/
+    uint8_t Mode;   /*!< possible values from @GPIO_PIN_MODES           >*/
+    uint8_t PullUp; /*!< possible values from @GPIO_PULLUP_CONFIG       >*/
+    uint8_t AltFun; /*!< possible values from @GPIO_ALTERNATE_FUNCTIONS >*/
+} GPIO_Pin_t;
 
-// Function to set the state of a pin (high or low)
-void GPIO_write(uint8_t pin, uint8_t value);
+/*
+ * Handle structure for a GPIO pin
+ */
+typedef struct
+{
+    GPIO_Regs_t GPIOX;
+    GPIO_Pin_t  GPIO_Pin;
+} GPIO_t;
 
-// Function to read the state of a pin
-uint8_t GPIO_read(uint8_t pin);
+/*
+ * @GPIO_PIN_NUMBERS
+ * GPIO pin numbers
+ */
+#define PIN0  				0
+#define PIN1  				1
+#define PIN2  				2
+#define PIN3  				3
+#define PIN4  				4
+#define PIN5  				5
+#define PIN6  				6
+#define PIN7  				7
 
-// Add more GPIO-related functions and definitions as needed
+/*
+ * @GPIO_PIN_MODES
+ * GPIO pin possible modes
+ */
+#define MODE_IN 		    0
+#define MODE_OUT 		    1
+#define MODE_ALTFN 	        2
 
-#endif // ATMEGA328P_GPIO_H
+/*
+ * @GPIO_PULLUP_CONFIG
+ * GPIO pin possible modes
+ */
+#define PULLUP_DISABLED     0
+#define PULLUP_ENABLED      1
+
+/*
+ * @GPIO_ALTERNATE_FUNCTIONS
+ * GPIO pin possible alternate functions
+ */
+
+/******************************************************************************************
+ *                            APIs supported by this driver                               *
+ *             For more information about the APIs check the function definitions         *
+ ******************************************************************************************/
+
+/*
+ * Init and De-init
+ */
+void GPIO_Init(GPIO_t PORTX);
+void GPIO_DeInit(GPIO_t PORTX);
+
+/*
+ * Data read and write
+ */
+uint8_t GPIO_ReadPin(GPIO_t PORTX);
+void GPIO_WritePin(GPIO_t PORTX, uint8_t Value);
+void GPIO_TogglePin(GPIO_t PORTX);
+
+#endif // __ATMEGA328P_GPIO_H__

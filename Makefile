@@ -9,12 +9,12 @@ CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -Os
 LDFLAGS          = -mmcu=atmega328p
 
 # Flags for avrdude
-UPLOAD_PROTOCOL  = arduino                # Change this according to your programmer
-UPLOAD_PORT      = COM4                   # Change this to your programming port (e.g., COM3)
-UPLOAD_BAUD      = 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       = 000pilot_example.lss      # Target in .lss format
-TARGET_HEX       = 000pilot_example.hex      # Target in .hex format
-TARGET_ELF       = 000pilot_example.elf      # Target in .elf format
+UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
+UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
+UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
+TARGET_LSS       ?= 002led_button_toggle.lss      # Target in .lss format
+TARGET_HEX       ?= 002led_button_toggle.hex      # Target in .hex format
+TARGET_ELF       ?= 002led_button_toggle.elf      # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -26,13 +26,12 @@ OBJS = $(SRC_DIR)/atmega328p_gpio.o
 # OBJS += $(SRC_DIR)/atmega328p_uart.o
 
 # Targets
-all: 000pilot_example.elf 001led_toggle.elf
+all: 000pilot_example.elf 001led_toggle.elf 002led_button_toggle.elf
 	@echo "Build complete for the following examples:"
 	@echo " - 000pilot_example"
 	@echo " - 001led_toggle"
-#	@echo " - 002led_button"
+	@echo " - 002led_button_toggle"
 
-###################################################
 # Compile source files in drivers/src (.c)
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
@@ -42,16 +41,6 @@ $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 $(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c 
 	@echo "Compiling example source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
-
-# Compile source files in drivers/src (.c)
-#$(SRC_DIR)/%.o: $(SRC_DIR)/%.c
-#	$(CC) $(CFLAGS) -c $< -o $@
-
-# Compile source files in src (.c)
-#$(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c
-#	$(CC) $(CFLAGS) -c $< -o $@
-
-####################################################
 
 #  Build 000pilot_example example
 000pilot_example.elf: $(EXAMPLES_DIR)/000pilot_example.o
@@ -70,15 +59,15 @@ $(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c
 	@echo "Build complete: 001led_toggle.elf"
 
 # Build 002led_button example
-002led_button.elf: $(EXAMPLES_DIR)/002led_button.o $(OBJS)
-	@echo "Linking 002led_button.elf..."
+002led_button_toggle.elf: $(EXAMPLES_DIR)/002led_button_toggle.o $(OBJS)
+	@echo "Linking 002led_button_toggle.elf..."
 	$(CC) $(LDFLAGS) -o $@ $^
-	@echo "Creating HEX file for 002led_button..."
-	$(OBJCOPY) 002led_button.elf 002led_buttonr.hex -O ihex
-	@echo "Build complete: 002led_button.elf"
+	@echo "Creating HEX file for 002led_button_toggle..."
+	$(OBJCOPY) 002led_button_toggle.elf 002led_button_toggle.hex -O ihex
+	@echo "Build complete: 002led_button_toggle.elf"
 
 # Deploy the program to the microcontroller
-deploy: $(TARGET_ELF) $(TARGET_LSS)
+deploy: clean $(TARGET_ELF) $(TARGET_LSS)
 	@echo "Deploying $(TARGET_HEX) to microcontroller..."
 	$(AVRDUDE) -p atmega328p -c $(UPLOAD_PROTOCOL) -P $(UPLOAD_PORT) -b $(UPLOAD_BAUD) -U flash:w:$(TARGET_HEX):i
 	@echo "Deployment process finished."
