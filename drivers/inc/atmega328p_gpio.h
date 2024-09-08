@@ -64,15 +64,15 @@ typedef struct
 /*
  * Init and De-init
  */
-void GPIO_Init(GPIO_t GPIOX);
-void GPIO_DeInit(GPIO_t GPIOX);
+void GPIO_Init(GPIO_t PORTX);
+void GPIO_DeInit(GPIO_t PORTX);
 
 /*
  * Data read and write
  */
-uint8_t GPIO_ReadPin(GPIO_t *pGPIO);
-void GPIO_WritePin(GPIO_t *pGPIO, uint8_t Value);
-void GPIO_TogglePin(GPIO_t GPIO);
+uint8_t GPIO_ReadPin(GPIO_t PORTX);
+void GPIO_WritePin(GPIO_t PORTX, uint8_t Value);
+void GPIO_TogglePin(GPIO_t PORTX);
 
 //uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
 //void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);

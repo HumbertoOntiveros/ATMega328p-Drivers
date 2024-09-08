@@ -22,7 +22,7 @@
  *
  * @brief             - Initializes the specified GPIO pin with the given settings.
  *
- * @param[in]         - pGPIO: Pointer to a GPIO_t structure containing the pin configuration.
+ * @param[in]         - GPIO_t structure containing the pin configuration.
  *
  * @return            - None
  *
@@ -50,7 +50,7 @@ void GPIO_Init(GPIO_t PORTX)
  *
  * @brief             - De-initializes the specified GPIO pin, resetting it to its default state.
  *
- * @param[in]         - pGPIO: Pointer to a GPIO_t structure containing the pin to be de-initialized.
+ * @param[in]         - GPIO_t structure containing the pin to be de-initialized.
  *
  * @return            - None
  *
@@ -58,7 +58,11 @@ void GPIO_Init(GPIO_t PORTX)
  */
 void GPIO_DeInit(GPIO_t GPIOX)
 {
+    // Reset the pin's direction to input
+    *GPIOX.GPIOX.DDR &= ~(1 << GPIOX.GPIO_Pin.Number);
 
+    // Disable pull-up resistors by setting the pin to low
+    *GPIOX.GPIOX.PORT &= ~(1 << GPIOX.GPIO_Pin.Number);
 }
 
 /*********************************************************************
@@ -66,15 +70,20 @@ void GPIO_DeInit(GPIO_t GPIOX)
  *
  * @brief             - Reads the current state of the specified GPIO pin.
  *
- * @param[in]         - pGPIO: Pointer to a GPIO_t structure containing the pin to be read.
+ * @param[in]         - GPIO_t structure containing the pin to be read.
  *
  * @return            - uint8_t: Returns 1 if the pin is high, 0 if the pin is low.
  *
  * @Note              - Ensure the pin is configured correctly before reading.
  */
-uint8_t GPIO_ReadPin(GPIO_t *pGPIO)
+uint8_t GPIO_ReadPin(GPIO_t PORTX)
 {
-    return 0;
+    // Check if the pin is configured as an input
+    return (!(*PORTX.GPIOX.DDR & (1 << PORTX.GPIO_Pin.Number))) ?
+        // If it is an input, return the pin state using the PIN register
+        ((*PORTX.GPIOX.PIN & (1 << PORTX.GPIO_Pin.Number)) != 0) :
+        // If it is not an input, return 0
+        0;
 }
 
 /*********************************************************************
@@ -82,16 +91,24 @@ uint8_t GPIO_ReadPin(GPIO_t *pGPIO)
  *
  * @brief             - Sets or clears the specified GPIO pin.
  *
- * @param[in]         - pGPIO: Pointer to a GPIO_t structure containing the pin to be written to.
+ * @param[in]         - GPIO_t structure containing the pin to be written to.
  * @param[in]         - Value: Value to write to the pin (1 for high, 0 for low).
  *
  * @return            - None
  *
  * @Note              - Make sure the pin is configured as output before writing.
  */
-void GPIO_WritePin(GPIO_t *pGPIO, uint8_t Value)
+void GPIO_WritePin(GPIO_t PORTX, uint8_t Value)
 {
-
+    // Check if the pin is configured as an output
+    (*PORTX.GPIOX.DDR & (1 << PORTX.GPIO_Pin.Number)) ?
+        // If it is an output, set the pin state to "Value" using the PORT register
+        ((Value) ? 
+            (*PORTX.GPIOX.PORT |= (1 << PORTX.GPIO_Pin.Number)) : 
+            (*PORTX.GPIOX.PORT &= ~(1 << PORTX.GPIO_Pin.Number))
+        ) :
+        // If it is not an output, do nothing
+        (void)0;
 }
 
 /*********************************************************************
@@ -99,7 +116,7 @@ void GPIO_WritePin(GPIO_t *pGPIO, uint8_t Value)
  *
  * @brief             - Toggles the current state of the specified GPIO pin.
  *
- * @param[in]         - pGPIO: Pointer to a GPIO_t structure containing the pin to be toggled.
+ * @param[in]         - GPIO_t structure containing the pin to be toggled.
  *
  * @return            - None
  *
