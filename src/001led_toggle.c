@@ -13,9 +13,14 @@
  
 #include "atmega328p_gpio.h"
 
-void delay(void)
+void Delay_ms(uint32_t ms)
 {
-	for(volatile uint32_t i = 0 ; i < 50000 ; i ++);
+    // Assuming the ATmega328P has a 16 MHz clock
+    // Each iteration of the 'for' loop takes approximately 4 clock cycles
+    // Therefore, a value is needed to adjust the delay duration
+    const uint32_t cycles_per_ms = 471; // 16 MHz / 4 (cycles per instruction) / 1000 ms
+
+    for (volatile uint32_t i = 0; i < (cycles_per_ms * ms); i++);
 }
 
 int main(void)
@@ -32,7 +37,7 @@ int main(void)
     while (1)
     {
         GPIO_TogglePin(LED);
-        delay();
+        Delay_ms(1);
     }
 
     return 0;

@@ -11,15 +11,20 @@
  */
 
 #include "atmega328p_gpio.h"
--
+
 #define LED_ON       1
 #define LED_OFF      0
 #define BUTTON_HIGH  1
 #define BUTTOM_LOW   0
 
-void delay(void)
+void Delay_ms(uint32_t ms)
 {
-	for(volatile uint32_t i = 0 ; i < 80000 ; i ++);
+    // Assuming the ATmega328P has a 16 MHz clock
+    // Each iteration of the 'for' loop takes approximately 4 clock cycles
+    // Therefore, a value is needed to adjust the delay duration
+    const uint32_t cycles_per_ms = 471; // 16 MHz / 4 (cycles per instruction) / 1000 ms
+
+    for (volatile uint32_t i = 0; i < (cycles_per_ms * ms); i++);
 }
 
 int main(void)
@@ -67,7 +72,7 @@ int main(void)
         // Update the previous state
         ButtonPreviousState = ButtonCurrentState;
 
-        delay();
+        Delay_ms(100);
 
     }
 
