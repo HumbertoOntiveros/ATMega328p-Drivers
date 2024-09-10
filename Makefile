@@ -12,25 +12,27 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 002led_button_toggle.lss      # Target in .lss format
-TARGET_HEX       ?= 002led_button_toggle.hex      # Target in .hex format
-TARGET_ELF       ?= 002led_button_toggle.elf      # Target in .elf format
+TARGET_LSS       ?= 003hello_world.lss      # Target in .lss format
+TARGET_HEX       ?= 003hello_world.hex      # Target in .hex format
+TARGET_ELF       ?= 003hello_world.elf      # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
 INC_DIR          = drivers/inc
 EXAMPLES_DIR     = src
+MONITOR_PATH     := ./scripts/serial_monitor.ps1
 
 # Source files
 OBJS = $(SRC_DIR)/atmega328p_gpio.o
-# OBJS += $(SRC_DIR)/atmega328p_uart.o
+OBJS += $(SRC_DIR)/syscalls.o
 
 # Targets
-all: 000pilot_example.elf 001led_toggle.elf 002led_button_toggle.elf
+all: 000pilot_example.elf 001led_toggle.elf 002led_button_toggle.elf 003hello_world.elf
 	@echo "Build complete for the following examples:"
 	@echo " - 000pilot_example"
 	@echo " - 001led_toggle"
 	@echo " - 002led_button_toggle"
+	@echo " - 003hello_world"
 
 # Compile source files in drivers/src (.c)
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
@@ -66,6 +68,14 @@ $(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c
 	$(OBJCOPY) 002led_button_toggle.elf 002led_button_toggle.hex -O ihex
 	@echo "Build complete: 002led_button_toggle.elf"
 
+# Build 003hello_world example
+003hello_world.elf: $(EXAMPLES_DIR)/003hello_world.o $(OBJS)
+	@echo "Linking 003hello_world.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 003hello_world..."
+	$(OBJCOPY) 003hello_world.elf 003hello_world.hex -O ihex
+	@echo "Build complete: 003hello_world.elf"
+
 # Deploy the program to the microcontroller
 deploy: clean $(TARGET_ELF) $(TARGET_LSS)
 	@echo "Deploying $(TARGET_HEX) to microcontroller..."
@@ -77,6 +87,10 @@ $(TARGET_LSS): $(TARGET_ELF)
 	@echo "Generating LSS file from $(TARGET_ELF)..."
 	$(OBJDUMP) -h -S $(TARGET_ELF) > $(TARGET_LSS)
 	@echo "LSS file generated: $(TARGET_LSS)"
+
+# Runs the serial monitor script using PowerShell
+serial-monitor:
+	@powershell -ExecutionPolicy Bypass -File $(MONITOR_PATH)
 
 # Clean object files and executables
 clean:
