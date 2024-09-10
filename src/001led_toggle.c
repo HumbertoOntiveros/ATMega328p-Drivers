@@ -37,7 +37,7 @@ int main(void)
     while (1)
     {
         GPIO_TogglePin(LED);
-        Delay_ms(1);
+        Delay_ms(1000);
     }
 
     return 0;
