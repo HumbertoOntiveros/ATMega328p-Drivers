@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 003hello_world.lss      # Target in .lss format
-TARGET_HEX       ?= 003hello_world.hex      # Target in .hex format
-TARGET_ELF       ?= 003hello_world.elf      # Target in .elf format
+TARGET_LSS       ?= 004led_button_toggle_int.lss      # Target in .lss format
+TARGET_HEX       ?= 004led_button_toggle_int.hex      # Target in .hex format
+TARGET_ELF       ?= 004led_button_toggle_int.elf      # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -27,12 +27,14 @@ OBJS = $(SRC_DIR)/atmega328p_gpio.o
 OBJS += $(SRC_DIR)/syscalls.o
 
 # Targets
-all: 000pilot_example.elf 001led_toggle.elf 002led_button_toggle.elf 003hello_world.elf
+all: 000pilot_example.elf 001led_toggle.elf 002led_button_toggle.elf \
+		003hello_world.elf 004led_button_toggle_int.elf
 	@echo "Build complete for the following examples:"
 	@echo " - 000pilot_example"
 	@echo " - 001led_toggle"
 	@echo " - 002led_button_toggle"
 	@echo " - 003hello_world"
+	@echo " - 004led_button_toggle_int"
 
 # Compile source files in drivers/src (.c)
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
@@ -75,6 +77,14 @@ $(EXAMPLES_DIR)/%.o: $(EXAMPLES_DIR)/%.c
 	@echo "Creating HEX file for 003hello_world..."
 	$(OBJCOPY) 003hello_world.elf 003hello_world.hex -O ihex
 	@echo "Build complete: 003hello_world.elf"
+
+# Build 004led_button_toggle_int example
+004led_button_toggle_int.elf: $(EXAMPLES_DIR)/004led_button_toggle_int.o $(OBJS)
+	@echo "Linking 004led_button_toggle_int.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 004led_button_toggle_int..."
+	$(OBJCOPY) 004led_button_toggle_int.elf 004led_button_toggle_int.hex -O ihex
+	@echo "Build complete: 004led_button_toggle_int.elf"
 
 # Deploy the program to the microcontroller
 deploy: clean $(TARGET_ELF) $(TARGET_LSS)
