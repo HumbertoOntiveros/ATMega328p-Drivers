@@ -129,3 +129,132 @@ void GPIO_TogglePin(GPIO_t PORTX)
         (void)0;
         
 }
+
+/********************************************************************* 
+ * @fn      		  - GPIO_EnableInterrupt
+ *
+ * @brief             - Enables the interrupt for the specified GPIO pin.
+ *
+ * @param[in]         - GPIO_t structure containing the pin for which the interrupt is to be enabled.
+ *
+ * @return            - None
+ *
+ * @Note              - This function must be called to allow the specified pin to trigger interrupts.
+ */
+void GPIO_EnableInterrupt(GPIO_t* PORTX) {
+
+    if (PORTX->GPIOX.DDR == GPIOD.DDR)
+    {
+        if (PORTX->GPIO_Pin.Number == PIN2) // INT0 (External Interrupt)
+        {
+            INT_EIMSK_REG |= (1 << EIMSK_INT0);  // Enable INT0 interrupt
+        }
+        else if (PORTX->GPIO_Pin.Number == PIN3) // INT1 (External Interrupt)
+        {
+            INT_EIMSK_REG |= (1 << EIMSK_INT1);  // Enable INT1 interrupt
+        }
+        else
+        {
+            // PD0, PD1, PD4-PD7 use pin change interrupts (PCINT)
+            PCINT_PCICR_REG |= (1 << PCICR_PCIE2);  // Enable PCINT for Port D
+            PCINT_PCMSK2_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt in Port D
+        }
+    }
+    else if (PORTX->GPIOX.DDR == GPIOB.DDR)
+    {
+        PCINT_PCICR_REG |= (1 << PCICR_PCIE0);  // Enable PCINT for Port B
+        PCINT_PCMSK0_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt in Port B
+    }
+    else if (PORTX->GPIOX.DDR == GPIOC.DDR)
+    {
+        PCINT_PCICR_REG |= (1 << PCICR_PCIE1);  // Enable PCINT for Port C
+        PCINT_PCMSK1_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt in Port C
+    }
+}
+
+/********************************************************************* 
+ * @fn      		  - GPIO_DisableInterrupt
+ *
+ * @brief             - Disables the interrupt for the specified GPIO pin.
+ *
+ * @param[in]         - GPIO_t structure containing the pin for which the interrupt is to be disabled.
+ *
+ * @return            - None
+ *
+ * @Note              - This function stops the specified pin from triggering interrupts.
+ */
+void GPIO_DisableInterrupt(GPIO_t* PORTX) {
+
+    if (PORTX->GPIOX.DDR == GPIOD.DDR)
+    {
+        if (PORTX->GPIO_Pin.Number == PIN2) // INT0 (External Interrupt)
+        {
+            INT_EIMSK_REG &= ~(1 << EIMSK_INT0);  // Disable INT0 interrupt
+        }
+        else if (PORTX->GPIO_Pin.Number == PIN3) // INT1 (External Interrupt)
+        {
+            INT_EIMSK_REG &= ~(1 << EIMSK_INT1);  // Disable INT1 interrupt
+        }
+        else
+        {
+            // Disable specific pin change interrupt for Port D
+            PCINT_PCMSK2_REG &= ~(1 << PORTX->GPIO_Pin.Number);
+        }
+    }
+    else if (PORTX->GPIOX.DDR == GPIOB.DDR)
+    {
+        PCINT_PCMSK0_REG &= ~(1 << PORTX->GPIO_Pin.Number);  // Disable specific pin interrupt in Port B
+    }
+    else if (PORTX->GPIOX.DDR == GPIOC.DDR)
+    {
+        PCINT_PCMSK1_REG &= ~(1 << PORTX->GPIO_Pin.Number);  // Disable specific pin interrupt in Port C
+    }
+}
+
+/********************************************************************* 
+ * @fn      		  - GPIO_ConfigInterrupt
+ *
+ * @brief             - Configures the trigger mode for the specified GPIO pin interrupt.
+ *
+ * @param[in]         - GPIO_t structure containing the pin to be configured.
+ * @param[in]         - Trigger mode (e.g., rising edge, falling edge).
+ *
+ * @return            - None
+ *
+ * @Note              - This function sets the behavior of the interrupt for the specified pin.
+ */
+void GPIO_ConfigInterrupt(GPIO_t* PORTX, uint8_t trigger) {
+
+    if (PORTX->GPIOX.DDR == GPIOD.DDR)
+    {
+        if (PORTX->GPIO_Pin.Number == PIN2) // INT0 (External Interrupt)
+        {
+            INT_EICRA_REG &= ~(3 << EICRA_ISC00);        // Clear the trigger bits for INT0
+            INT_EICRA_REG |= (trigger << EICRA_ISC00);   // Set the trigger type for INT0
+        }
+        else if (PORTX->GPIO_Pin.Number == PIN3) // INT1 (External Interrupt)
+        {
+            INT_EICRA_REG &= ~(3 << EICRA_ISC10);        // Clear the trigger bits for INT1
+            INT_EICRA_REG |= (trigger << EICRA_ISC10);   // Set the trigger type for INT1
+        }
+        else
+        {
+            // PD0, PD1, PD4-PD7 use pin change interrupts (PCINT)
+            PCINT_PCICR_REG |= (1 << PCICR_PCIE2);       // Enable PCINT for Port D
+            PCINT_PCMSK2_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt for Port D
+        }
+    }
+    else if (PORTX->GPIOX.DDR == GPIOB.DDR)
+    {
+        // Port B pins use pin change interrupts (PCINT)
+        PCINT_PCICR_REG |= (1 << PCICR_PCIE0);           // Enable PCINT for Port B
+        PCINT_PCMSK0_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt for Port B
+    }
+    else if (PORTX->GPIOX.DDR == GPIOC.DDR)
+    {
+        // Port C pins use pin change interrupts (PCINT)
+        PCINT_PCICR_REG |= (1 << PCICR_PCIE1);           // Enable PCINT for Port C
+        PCINT_PCMSK1_REG |= (1 << PORTX->GPIO_Pin.Number);  // Enable specific pin interrupt for Port C
+    }
+}
+
