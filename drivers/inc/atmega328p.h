@@ -88,6 +88,16 @@
 #define ISR(handler)     __attribute__ ((signal, used, externally_visible)) void handler(void)
 
 /*
+ * Interrupt Control
+ */
+#define IRQ_EN()  __asm__ volatile ("sei")  // Enable global interrupts
+#define IRQ_DIS() __asm__ volatile ("cli")  // Disable global interrupts
+
+/******************************************************************************************
+ *                         Peripheral Register Addresses                                  *
+ ******************************************************************************************/
+
+/*
  * GPIO Registers for ATmega328P
  * Base addresses of GPIO peripherals.
  */
@@ -115,6 +125,22 @@
 #define GPIO_PORTD_REG_ADDR  ((volatile uint8_t *)0x2B)  // Data Register for Port D
 #define GPIO_PIND_REG_ADDR   ((volatile uint8_t *)0x29)  // Pin Input Register for Port D
 
+
+/* 
+ * External Interrupt Control Registers
+ */
+#define INT_EICRA_REG        (*(volatile uint8_t *)0x69)  // External Interrupt Control Register A
+#define INT_EIMSK_REG        (*(volatile uint8_t *)0x3D)  // External Interrupt Mask Register
+#define PCINT_PCICR_REG      (*(volatile uint8_t *)0x68)  // Pin Change Interrupt Control Register
+#define PCINT_PCMSK0_REG     (*(volatile uint8_t *)0x6B)  // Pin Change Mask Register 0
+#define PCINT_PCMSK1_REG     (*(volatile uint8_t *)0x6C)  // Pin Change Mask Register 1
+#define PCINT_PCMSK2_REG     (*(volatile uint8_t *)0x6D)  // Pin Change Mask Register 2
+
+/* 
+ * External Interrupt Flag Registers
+ */
+#define INT_EIFR_REG         (*(volatile uint8_t *)0x3C)  // External Interrupt Flag Register
+#define PCINT_PCIFR_REG      (*(volatile uint8_t *)0x3B)  // Pin Change Interrupt Flag Register
 
 /******************************************************************************************
  *                        Peripheral Register Definition Structures                       *
@@ -172,6 +198,45 @@ typedef struct
 #define MCUCR_PUD   4
 #define MCUCR_BODSE 5
 #define MCUCR_BODS  6
+
+/*
+ * Bit position definitions of External Interrupts
+ */
+
+/*
+ * Bit position definitions for INT_EICRA_REG
+ */
+#define EICRA_ISC00   0  // Interrupt Sense Control 0 Bit 0
+#define EICRA_ISC01   1  // Interrupt Sense Control 0 Bit 1
+#define EICRA_ISC10   2  // Interrupt Sense Control 1 Bit 0
+#define EICRA_ISC11   3  // Interrupt Sense Control 1 Bit 1
+
+/*
+ * Bit position definitions for INT_EIMSK_REG
+ */
+#define EIMSK_INT0    0  // External Interrupt Request 0 Enable
+#define EIMSK_INT1    1  // External Interrupt Request 1 Enable
+
+/*
+ * Bit position definitions for PCINT_PCICR_REG
+ */
+#define PCICR_PCIE0   0  // Pin Change Interrupt Enable 0
+#define PCICR_PCIE1   1  // Pin Change Interrupt Enable 1
+#define PCICR_PCIE2   2  // Pin Change Interrupt Enable 2
+
+/*
+ * Bit position definitions for INT_EIFR_REG
+ */
+#define EIFR_INTF0     0  // External Interrupt Flag 0
+#define EIFR_INTF1     1  // External Interrupt Flag 1
+
+/*
+ * Bit position definitions for PCINT_PCIFR_REG
+ */
+#define PCIFR_PCIF0    0  // Pin Change Interrupt Flag 0
+#define PCIFR_PCIF1    1  // Pin Change Interrupt Flag 1
+#define PCIFR_PCIF2    2  // Pin Change Interrupt Flag 2
+
 
 /*
  * Generic Macros Definition
