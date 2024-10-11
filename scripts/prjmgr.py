@@ -75,13 +75,17 @@ def update_makefile_example(action, driver_name):
         file.writelines(lines)
 
 # Función para actualizar el Makefile en caso de driver o BSP
-def update_makefile_driver(action, driver_name):
+def update_makefile_driver(action, type, driver_name):
     with open('Makefile', 'r') as file:
         lines = file.readlines()
-
-    # Actualizar la variable OBJS con nuevo driver o BSP 
-    objs_line = f"OBJS += $(SRC_DIR)/{driver_name}.o\n"
     
+    if type == 'drv':
+        # Actualizar la variable OBJS con nuevo driver 
+        objs_line = f"OBJS += $(SRC_DIR)/{driver_name}.o\n"
+    else :
+        # Actualizar la variable OBJS con nuevo BSP 
+        objs_line = f"OBJS += $(BSP_DIR)/{driver_name}.o\n"
+
     if action == 'add':
         # Agregar driver a la variable OBJS
         for i, line in enumerate(lines):
@@ -119,7 +123,7 @@ def create_driver(driver_name):
             print(f'Created source file: {source_file_path}')
 
         # Update Makefile
-        update_makefile_driver('add', driver_name)
+        update_makefile_driver('add', 'drv', driver_name)
 
 # Function to remove a driver
 def remove_driver(driver_name):
@@ -134,7 +138,7 @@ def remove_driver(driver_name):
         print(f'Removed source file: {source_file_path}')
     
     # Update Makefile
-    update_makefile_driver('remove', driver_name)
+    update_makefile_driver('remove', 'drv', driver_name)
     
     if not os.path.exists(header_file_path) and not os.path.exists(source_file_path):
         print(f'Driver {driver_name} has been removed successfully! All files cleared.')
@@ -195,7 +199,7 @@ def create_bsp(bsp_name):
             print(f'Created BSP source: {source_file_path}')
 
         # Update Makefile
-        update_makefile_driver('add', bsp_name)
+        update_makefile_driver('add', 'bsp', bsp_name)
 
 # Function to remove a BSP
 def remove_bsp(bsp_name):
@@ -210,7 +214,7 @@ def remove_bsp(bsp_name):
         print(f'Removed BSP source file: {source_file_path}')
     
     # Update Makefile
-    update_makefile_driver('remove', bsp_name)
+    update_makefile_driver('remove', 'bsp', bsp_name)
 
     if not os.path.exists(header_file_path) and not os.path.exists(source_file_path):
         print(f'BSP {bsp_name} has been removed successfully! All files cleared.')
