@@ -19,33 +19,34 @@
  * Ensure that the ISR functions are declared with the `ISR` macro and match the vector definitions below.
  * 
  * Interrupt Vector Assignments:
- * - __vector_1: External Interrupt Request 0 (INT0)
- * - __vector_2: External Interrupt Request 1 (INT1)
- * - __vector_3: Pin Change Interrupt Request 0 (PCINT0)
- * - __vector_4: Pin Change Interrupt Request 1 (PCINT1)
- * - __vector_5: Pin Change Interrupt Request 2 (PCINT2)
- * - __vector_6: Watchdog Timer Interrupt (WDT)
- * - __vector_7: Timer/Counter2 Compare Match A (TIMER2_COMPA)
- * - __vector_8: Timer/Counter2 Compare Match B (TIMER2_COMPB)
- * - __vector_9: Timer/Counter2 Overflow (TIMER2_OVF)
- * - __vector_10: Timer/Counter1 Capture Event (TIMER1_CAPT)
- * - __vector_11: Timer/Counter1 Compare Match A (TIMER1_COMPA)
- * - __vector_12: Timer/Counter1 Compare Match B (TIMER1_COMPB)
- * - __vector_13: Timer/Counter1 Overflow (TIMER1_OVF)
- * - __vector_14: Timer/Counter0 Compare Match A (TIMER0_COMPA)
- * - __vector_15: Timer/Counter0 Compare Match B (TIMER0_COMPB)
- * - __vector_16: Timer/Counter0 Overflow (TIMER0_OVF)
- * - __vector_17: SPI Serial Transfer Complete (SPI_STC)
- * - __vector_18: USART Receive Complete (USART_RX)
- * - __vector_19: USART Data Register Empty (USART_UDRE)
- * - __vector_20: USART Transmit Complete (USART_TX)
- * - __vector_21: ADC Conversion Complete (ADC)
- * - __vector_22: EEPROM Ready (EE_READY)
- * - __vector_23: Analog Comparator (ANALOG_COMP)
- * - __vector_24: Two-Wire Serial Interface (TWI)
- * - __vector_25: Store Program Memory Read (SPM_READY)
- *
- * To define an ISR for an interrupt, use the ISR macro with the appropriate vector definition.
+ */
+#define ISR_INT0          __vector_1  //External Interrupt Request 0 (INT0)
+#define ISR_INT1          __vector_2  //External Interrupt Request 1 (INT1)
+#define ISR_PCINT0        __vector_3  //Pin Change Interrupt Request 0 (PCINT0)
+#define ISR_PCINT1        __vector_4  //Pin Change Interrupt Request 1 (PCINT1)
+#define ISR_PCINT2        __vector_5  //Pin Change Interrupt Request 2 (PCINT2)
+#define ISR_WDT           __vector_6  //Watchdog Timer Interrupt (WDT)
+#define ISR_TIMER2_COMPA  __vector_7  //Timer/Counter2 Compare Match A (TIMER2_COMPA)
+#define ISR_TIMER2_COMPB  __vector_8  //Timer/Counter2 Compare Match B (TIMER2_COMPB)
+#define ISR_TIMER2_OVF    __vector_9  //Timer/Counter2 Overflow (TIMER2_OVF)
+#define ISR_TIMER1_CAPT   __vector_10 //Timer/Counter1 Capture Event (TIMER1_CAPT)
+#define ISR_TIMER1_COMPA  __vector_11 //Timer/Counter1 Compare Match A (TIMER1_COMPA)
+#define ISR_TIMER1_COMPB  __vector_12 //Timer/Counter1 Compare Match B (TIMER1_COMPB)
+#define ISR_TIMER1_OVF    __vector_13 //Timer/Counter1 Overflow (TIMER1_OVF)
+#define ISR_TIMER0_COMPA  __vector_14 //Timer/Counter0 Compare Match A (TIMER0_COMPA)
+#define ISR_TIMER0_COMPB  __vector_15 //Timer/Counter0 Compare Match B (TIMER0_COMPB)
+#define ISR_TIMER0_OVF    __vector_16 //Timer/Counter0 Overflow (TIMER0_OVF)
+#define ISR_SPI_STC       __vector_17 //SPI Serial Transfer Complete (SPI_STC)
+#define ISR_USART_RX      __vector_18 //USART Receive Complete (USART_RX)
+#define ISR_USART_UDRE    __vector_19 //USART Data Register Empty (USART_UDRE)
+#define ISR_USART_TX      __vector_20 //USART Transmit Complete (USART_TX)
+#define ISR_ADC           __vector_21 //ADC Conversion Complete (ADC)
+#define ISR_EE_READY      __vector_22 //EEPROM Ready (EE_READY)
+#define ISR_ANALOG_COMP   __vector_23 //Analog Comparator (ANALOG_COMP)
+#define ISR_TWI           __vector_24 //Two-Wire Serial Interface (TWI)
+#define ISR_SPM_READY     __vector_25 //Store Program Memory Read (SPM_READY)
+
+ /* To define an ISR for an interrupt, use the ISR macro with the appropriate vector definition.
  * Example:
  *   ISR(ISR_INT0) {
  *       // Handle External Interrupt Request 0 here
@@ -54,32 +55,6 @@
  * Make sure to configure the microcontroller's interrupt system properly in your code
  * to enable and handle these interrupts as needed.
  */
-
-#define ISR_INT0          __vector_1
-#define ISR_INT1          __vector_2
-#define ISR_PCINT0        __vector_3
-#define ISR_PCINT1        __vector_4
-#define ISR_PCINT2        __vector_5
-#define ISR_WDT           __vector_6
-#define ISR_TIMER2_COMPA  __vector_7
-#define ISR_TIMER2_COMPB  __vector_8
-#define ISR_TIMER2_OVF    __vector_9
-#define ISR_TIMER1_CAPT   __vector_10
-#define ISR_TIMER1_COMPA  __vector_11
-#define ISR_TIMER1_COMPB  __vector_12
-#define ISR_TIMER1_OVF    __vector_13
-#define ISR_TIMER0_COMPA  __vector_14
-#define ISR_TIMER0_COMPB  __vector_15
-#define ISR_TIMER0_OVF    __vector_16
-#define ISR_SPI_STC       __vector_17
-#define ISR_USART_RX      __vector_18
-#define ISR_USART_UDRE    __vector_19
-#define ISR_USART_TX      __vector_20
-#define ISR_ADC           __vector_21
-#define ISR_EE_READY      __vector_22
-#define ISR_ANALOG_COMP   __vector_23
-#define ISR_TWI           __vector_24
-#define ISR_SPM_READY     __vector_25
 
 /*
  *ISR handler function with required attributes for interrupt handling
@@ -142,6 +117,12 @@
 #define INT_EIFR_REG         (*(volatile uint8_t *)0x3C)  // External Interrupt Flag Register
 #define PCINT_PCIFR_REG      (*(volatile uint8_t *)0x3B)  // Pin Change Interrupt Flag Register
 
+/*
+ * SPI Registers for ATmega328P
+ * Base addresses of SPI peripheral.
+ */
+
+#define SPI_BASEADDR    0X4E
 /******************************************************************************************
  *                        Peripheral Register Definition Structures                       *
  ******************************************************************************************/
@@ -157,10 +138,22 @@ typedef struct
     volatile uint8_t *PIN;
 } GPIO_Regs_t;
 
+/*
+ * peripheral register definition structure for SPI
+ */
+typedef struct
+{
+    volatile uint8_t SPDR;
+    volatile uint8_t SPSR;
+    volatile uint8_t SPCR;
+}SPI_Regs_t;
 
 /******************************************************************************************
  *                                  Peripheral Definitions                                *
  ******************************************************************************************/
+ /*
+ * GPIO peripherals for ATmega328p
+ */
 #define GPIOB  ((GPIO_Regs_t){   \
     .MCUCR = GPIO_MCUCR_REG_ADDR,\
     .DDR   = GPIO_DDRB_REG_ADDR, \
@@ -181,6 +174,11 @@ typedef struct
     .PORT  = GPIO_PORTD_REG_ADDR,\
     .PIN   = GPIO_PIND_REG_ADDR, \
 })
+
+ /*
+ * SPI peripheral for ATmega328p
+ */
+#define SPI     ((SPI_Regs_t *)SPI_BASEADDR)
 
 /******************************************************************************************
  *                         Bit position definitions of peripherals                        *
@@ -237,6 +235,27 @@ typedef struct
 #define PCIFR_PCIF1    1  // Pin Change Interrupt Flag 1
 #define PCIFR_PCIF2    2  // Pin Change Interrupt Flag 2
 
+/*
+ * Bit position definitions of SPI peripherals
+ */
+/*
+ * Bit position definitions for SPI SPSR REG
+ */
+#define SPSR_SPI2X     0
+#define SPSR_WCOL      6
+#define SPSR_SPIF      7
+
+/*
+ * Bit position definitions for SPI SPCR REG
+ */
+ #define SPCR_SPR0     0
+ #define SPCR_SPR1     1
+ #define SPCR_CPHA     2
+ #define SPCR_CPOL     3
+ #define SPCR_MSTR     4
+ #define SPCR_DORD     5
+ #define SPCR_SPE      6
+ #define SPCR_SPIE     7
 
 /*
  * Generic Macros Definition
