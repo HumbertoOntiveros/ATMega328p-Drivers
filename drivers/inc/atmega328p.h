@@ -121,8 +121,8 @@
  * SPI Registers for ATmega328P
  * Base addresses of SPI peripheral.
  */
+#define SPI_BASEADDR    0X4C
 
-#define SPI_BASEADDR    0X4E
 /******************************************************************************************
  *                        Peripheral Register Definition Structures                       *
  ******************************************************************************************/
@@ -143,9 +143,10 @@ typedef struct
  */
 typedef struct
 {
-    volatile uint8_t SPDR;
-    volatile uint8_t SPSR;
     volatile uint8_t SPCR;
+    volatile uint8_t SPSR;
+    volatile uint8_t SPDR;
+
 }SPI_Regs_t;
 
 /******************************************************************************************
