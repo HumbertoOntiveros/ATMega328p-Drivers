@@ -5,16 +5,16 @@ OBJCOPY          = avr-objcopy
 OBJDUMP          = avr-objdump
 AVRDUDE          = avrdude
 SIZE             = avr-size
-CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -Os
+CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -Os -g2
 LDFLAGS          = -mmcu=atmega328p
 
 # Flags for avrdude
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 003hello_world.lss # Target in .lss format
-TARGET_HEX       ?= 003hello_world.hex # Target in .hex format
-TARGET_ELF       ?= 003hello_world.elf # Target in .elf format
+TARGET_LSS       ?= 006spi_txonly_arduino.lss # Target in .lss format
+TARGET_HEX       ?= 006spi_txonly_arduino.hex # Target in .hex format
+TARGET_ELF       ?= 006spi_txonly_arduino.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -25,15 +25,20 @@ MONITOR_PATH     := ./scripts/serial_monitor.ps1
 
 # Source files
 OBJS =  $(SRC_DIR)/syscalls.o
+OBJS += $(SRC_DIR)/atmega328p_spi.o
 OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        006spi_txonly_arduino.elf \
+        005spi_tx.elf \
     	004led_button_toggle_int.elf \
 		003hello_world.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 006spi_txonly_arduino"
+	@echo " - 005spi_tx"
 	@echo " - 004led_button_toggle_int"
 	@echo " - 003hello_world"
 	@echo " - 002led_button_toggle"
@@ -54,6 +59,22 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 006spi_txonly_arduino example
+006spi_txonly_arduino.elf: $(EXAMPLES_DIR)/006spi_txonly_arduino.o $(OBJS)
+	@echo "Linking 006spi_txonly_arduino.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 006spi_txonly_arduino..."
+	$(OBJCOPY) 006spi_txonly_arduino.elf 006spi_txonly_arduino.hex -O ihex
+	@echo "Build complete: 006spi_txonly_arduino.elf"
+
+#  Build 005spi_tx example
+005spi_tx.elf: $(EXAMPLES_DIR)/005spi_tx.o $(OBJS)
+	@echo "Linking 005spi_tx.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 005spi_tx..."
+	$(OBJCOPY) 005spi_tx.elf 005spi_tx.hex -O ihex
+	@echo "Build complete: 005spi_tx.elf"
 
 #  Build 004led_button_toggle_int example
 004led_button_toggle_int.elf: $(EXAMPLES_DIR)/004led_button_toggle_int.o $(OBJS)
