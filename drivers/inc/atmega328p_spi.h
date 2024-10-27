@@ -39,43 +39,49 @@ typedef struct
 {
     SPI_Regs_t    *pReg;
     SPI_Config_t  Config;
+   	uint8_t 	  *pTxBuffer;   /* !< To store the app. Tx buffer address > */
+	uint8_t 	  *pRxBuffer;	/* !< To store the app. Rx buffer address > */
+	uint32_t 	  TxLen;		/* !< To store Tx len > */
+	uint32_t 	  RxLen;		/* !< To store Tx len > */
+	uint8_t 	  TxState;	    /* !< To store Tx state > */
+	uint8_t 	  RxState;	    /* !< To store Rx state > */
 }SPI_t;
 
 /*
  * SPI possible modes
  */
-#define MODE_SLAVE 		    0
-#define MODE_MASTER		    1
+#define SPI_MODE_SLAVE 		    0
+#define SPI_MODE_MASTER		    1
 
 /*
  * SPI data order options
  */
- #define ORDER_MSB          0
- #define ORDER_LSB          1
+ #define SPI_ORDER_MSB          0
+ #define SPI_ORDER_LSB          1
 
  /*
  * SPI Clock Polarity(CPOL) options
  */
- #define CPOL_LOW           0                 
- #define CPOL_HIGH          1
+ #define SPI_CPOL_LOW           0                 
+ #define SPI_CPOL_HIGH          1
 
 /*
  * SPI Clock Phase (CPHA) options
  */
-#define CPHA_LEADING        0
-#define CPHA_TRAILING       1 
+#define SPI_CPHA_LEADING        0
+#define SPI_CPHA_TRAILING       1 
 
 /*
  * SPI Clock Rate Selection options
  */
-#define SCLK_FOSC_DIV4            0 //SPI2X = 0
-#define SCLK_FOSC_DIV16           1 //SPI2X = 0
-#define SCLK_FOSC_DIV64           2 //SPI2X = 0
-#define SCLK_FOSC_DIV128          3 //SPI2X = 0
-#define SCLK_FOSC_DIV2            4 //SPI2X = 1
-#define SCLK_FOSC_DIV8            5 //SPI2X = 1
-#define SCLK_FOSC_DIV32           6 //SPI2X = 1
-#define SCLK_FOSC_DIV64_SPI2X     7 //SPI2X = 1
+#define SPI_SCLK_FOSC_DIV4            0 //SPI2X = 0
+#define SPI_SCLK_FOSC_DIV16           1 //SPI2X = 0
+#define SPI_SCLK_FOSC_DIV64           2 //SPI2X = 0
+#define SPI_SCLK_FOSC_DIV128          3 //SPI2X = 0
+#define SPI_SCLK_FOSC_DIV2            4 //SPI2X = 1
+#define SPI_SCLK_FOSC_DIV8            5 //SPI2X = 1
+#define SPI_SCLK_FOSC_DIV32           6 //SPI2X = 1
+#define SPI_SCLK_FOSC_DIV64_SPI2X     7 //SPI2X = 1
 
 /*
  * SPI pins definition for the ATmega328P
@@ -134,6 +140,19 @@ typedef struct
     }
 
 /*
+ * SPI application states
+ */
+#define SPI_READY 					0
+#define SPI_BUSY_IN_RX 				1
+#define SPI_BUSY_IN_TX 				2
+
+/*
+ * Possible SPI Application events
+ */
+#define SPI_EVENT_TX_CMPLT   1
+#define SPI_EVENT_RX_CMPLT   2
+
+/*
  * Generic Macros Definition
  */
  #define SPI_SPI2X_DIS_MASK        0X03
@@ -142,6 +161,7 @@ typedef struct
  *                            APIs supported by this driver                               *
  *             For more information about the APIs check the function definitions         *
  ******************************************************************************************/
+
 /*
  * Init and De-init
  */
@@ -154,8 +174,22 @@ typedef struct
 void SPI_SendData(SPI_t   *pSPIInst,uint8_t *pTxBuffer, uint32_t Len);
 void SPI_ReceiveData(SPI_t   *pSPIInst, uint8_t *pRxBuffer, uint32_t Len);
 
+ /*
+ * Data Send and Receive with interruption
+ */
+uint8_t SPI_SendDataIT(SPI_t   *pSPIInst,uint8_t *pTxBuffer, uint32_t Len);
+uint8_t SPI_ReceiveDataIT(SPI_t   *pSPIInst, uint8_t *pRxBuffer, uint32_t Len);
+
 /*
- * Other Peripheral Control APIs
+ * IRQ Configuration and ISR handling
+ */
+void SPI_IRQInterruptConfig(SPI_t *pSPIInst, uint8_t EnorDi);
+void SPI_IRQHandling(SPI_t *pSPIInst);
+static void  spi_txe_interrupt_handle(SPI_t *pSPIInst);
+static void  spi_rxne_interrupt_handle(SPI_t *pSPIInst);
+
+/*
+ * Other Peripheral Control APIs and Macro control definition
  */
 void SPI_Control(SPI_t *pSPIInst, uint8_t state);
 #define SPI_SlaveControl(gpio, state) GPIO_WritePin((gpio), (state))
