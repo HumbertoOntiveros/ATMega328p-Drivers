@@ -48,11 +48,11 @@ int main(void) {
 
     //SPI configuration
     spi_device.pReg             = SPI;
-    spi_device.Config.Mode      = MODE_MASTER;
-    spi_device.Config.DataOrder = ORDER_MSB;
-    spi_device.Config.CPOL      = CPOL_LOW;
-    spi_device.Config.CPHA      = CPHA_LEADING;
-    spi_device.Config.SCKSpeed  = SCLK_FOSC_DIV16;
+    spi_device.Config.Mode      = SPI_MODE_MASTER;
+    spi_device.Config.DataOrder = SPI_ORDER_MSB;
+    spi_device.Config.CPOL      = SPI_CPOL_LOW;
+    spi_device.Config.CPHA      = SPI_CPHA_LEADING;
+    spi_device.Config.SCKSpeed  = SPI_SCLK_FOSC_DIV16;
 
     //SPI init
     SPI_Init(&spi_device);
