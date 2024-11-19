@@ -5,12 +5,12 @@ OBJCOPY          = avr-objcopy
 OBJDUMP          = avr-objdump
 AVRDUDE          = avrdude
 SIZE             = avr-size
-CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -Os -g2
+CFLAGS           = -mmcu=atmega328p -std=gnu99 -Wall -O0 -fno-lto -g3
 LDFLAGS          = -mmcu=atmega328p
 
 # Flags for avrdude
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
-UPLOAD_PORT      ?= COM4                   # Change this to your programming port (e.g., COM3)
+UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
 TARGET_LSS       ?= 008spi_message_rcv_it.lss # Target in .lss format
 TARGET_HEX       ?= 008spi_message_rcv_it.hex # Target in .hex format
