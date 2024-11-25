@@ -68,6 +68,11 @@
 #define IRQ_EN()  __asm__ volatile ("sei")  // Enable global interrupts
 #define IRQ_DIS() __asm__ volatile ("cli")  // Disable global interrupts
 
+/*
+ * System clock frequency (16 MHz)
+ */
+#define F_CPU 16000000UL
+
 /******************************************************************************************
  *                         Peripheral Register Addresses                                  *
  ******************************************************************************************/
@@ -288,47 +293,47 @@ typedef struct
 /*
  * Bit position definitions for I2C TWSR REG
  */
-#define SPI_TWSR_TWPS0    0
-#define SPI_TWSR_TWPS1    1
-#define SPI_TWSR_TWS3     3
-#define SPI_TWSR_TWS4     4
-#define SPI_TWSR_TWS5     5
-#define SPI_TWSR_TWS6     6
-#define SPI_TWSR_TWS7     7
+#define I2C_TWSR_TWPS0    0
+#define I2C_TWSR_TWPS1    1
+#define I2C_TWSR_TWS3     3
+#define I2C_TWSR_TWS4     4
+#define I2C_TWSR_TWS5     5
+#define I2C_TWSR_TWS6     6
+#define I2C_TWSR_TWS7     7
 
 /*
  * Bit position definitions for I2C TWAR REG
  */
-#define SPI_TWAR_TWGCE    0
-#define SPI_TWAR_TWA0     1
-#define SPI_TWAR_TWA1     2
-#define SPI_TWAR_TWA2     3
-#define SPI_TWAR_TWA3     4
-#define SPI_TWAR_TWA4     5
-#define SPI_TWAR_TWA5     6
-#define SPI_TWAR_TWA6     7
+#define I2C_TWAR_TWGCE    0
+#define I2C_TWAR_TWA0     1
+#define I2C_TWAR_TWA1     2
+#define I2C_TWAR_TWA2     3
+#define I2C_TWAR_TWA3     4
+#define I2C_TWAR_TWA4     5
+#define I2C_TWAR_TWA5     6
+#define I2C_TWAR_TWA6     7
 
 /*
  * Bit position definitions for I2C TWCR REG
  */
-#define SPI_TWCR_TWIE     0
-#define SPI_TWCR_TWEN     2
-#define SPI_TWCR_TWWC     3
-#define SPI_TWCR_TWSTO    4
-#define SPI_TWCR_TWSTA    5
-#define SPI_TWCR_TWEA     6
-#define SPI_TWCR_TWINT    7
+#define I2C_TWCR_TWIE     0
+#define I2C_TWCR_TWEN     2
+#define I2C_TWCR_TWWC     3
+#define I2C_TWCR_TWSTO    4
+#define I2C_TWCR_TWSTA    5
+#define I2C_TWCR_TWEA     6
+#define I2C_TWCR_TWINT    7
 
 /*
  * Bit position definitions for I2C TWAMR REG
  */
-#define SPI_TWAMR_TWAM0   1
-#define SPI_TWAMR_TWAM2   2 
-#define SPI_TWAMR_TWAM3   3
-#define SPI_TWAMR_TWAM4   4
-#define SPI_TWAMR_TWAM5   5
-#define SPI_TWAMR_TWAM6   6
-#define SPI_TWAMR_TWAM7   7
+#define I2C_TWAMR_TWAM0   1
+#define I2C_TWAMR_TWAM2   2 
+#define I2C_TWAMR_TWAM3   3
+#define I2C_TWAMR_TWAM4   4
+#define I2C_TWAMR_TWAM5   5
+#define I2C_TWAMR_TWAM6   6
+#define I2C_TWAMR_TWAM7   7
 
 /*
  * Generic Macros Definition
