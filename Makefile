@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 008spi_message_rcv_it.lss # Target in .lss format
-TARGET_HEX       ?= 008spi_message_rcv_it.hex # Target in .hex format
-TARGET_ELF       ?= 008spi_message_rcv_it.elf # Target in .elf format
+TARGET_LSS       ?= 009i2c_master_tx_testing.lss # Target in .lss format
+TARGET_HEX       ?= 009i2c_master_tx_testing.hex # Target in .hex format
+TARGET_ELF       ?= 009i2c_master_tx_testing.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -31,6 +31,7 @@ OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        009i2c_master_tx_testing.elf \
         008spi_message_rcv_it.elf \
         007spi_cmd_handling.elf \
         006spi_txonly_arduino.elf \
@@ -40,6 +41,7 @@ all:	000pilot_example.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 009i2c_master_tx_testing"
 	@echo " - 008spi_message_rcv_it"
 	@echo " - 007spi_cmd_handling"
 	@echo " - 006spi_txonly_arduino"
@@ -64,6 +66,14 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 009i2c_master_tx_testing example
+009i2c_master_tx_testing.elf: $(EXAMPLES_DIR)/009i2c_master_tx_testing.o $(OBJS)
+	@echo "Linking 009i2c_master_tx_testing.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 009i2c_master_tx_testing..."
+	$(OBJCOPY) 009i2c_master_tx_testing.elf 009i2c_master_tx_testing.hex -O ihex
+	@echo "Build complete: 009i2c_master_tx_testing.elf"
 
 #  Build 008spi_message_rcv_it example
 008spi_message_rcv_it.elf: $(EXAMPLES_DIR)/008spi_message_rcv_it.o $(OBJS)
