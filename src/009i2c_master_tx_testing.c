@@ -37,6 +37,7 @@ uint8_t some_data[] = "We are testing I2C master Tx\n";
 // I2C peripheral initialization.
 void I2C_Inits(void)
 {
+    i2c_device.pReg = I2C;
     i2c_device.Config.DeviceAddress = MY_ADDR;
     i2c_device.Config.Mode = I2C_MODE_MASTER;
     i2c_device.Config.SCLSpeed= I2C_SCL_SPEED_100k;
