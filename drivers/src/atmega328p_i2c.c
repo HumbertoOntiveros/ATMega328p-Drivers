@@ -304,6 +304,31 @@ uint8_t I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len
 }
 
 /*********************************************************************
+ * @fn            - I2C_PeripheralControl
+ *
+ * @brief         - Enables or disables the I2C peripheral.
+ *
+ * @param[in]     - pI2CRegs: Pointer to the I2C register structure.
+ * @param[in]     - EnOrDi: Enable or Disable control:
+ *                           - Pass 1 to enable the I2C peripheral.
+ *                           - Pass 0 to disable the I2C peripheral.
+ *
+ * @return        - None
+ *
+ * @Note          - Modifies the TWEN (Two-wire Enable) bit in the TWCR (Two-wire Control Register).
+ *********************************************************************/
+void I2C_PeripheralControl(I2C_Regs_t *pI2CRegs, uint8_t EnOrDi)
+{
+    if(EnOrDi)
+    {
+        pI2CRegs->TWCR |= (1<<I2C_TWCR_TWEN); 
+    }else
+    {
+        pI2CRegs->TWCR &= ~(1<<I2C_TWCR_TWEN); 
+    }
+}
+
+/*********************************************************************
  * @fn            - I2C_ApplicationEventCallback
  *
  * @brief         - Application callback to handle specific I2C events.
