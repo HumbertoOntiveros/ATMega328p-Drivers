@@ -118,6 +118,28 @@ static bool I2C_write(I2C_Regs_t *pI2Cx, uint8_t data2write){
 }
 
 /*********************************************************************
+ * @fn            - I2C_read
+ *
+ * @brief         - Reads a byte of data from the I2C bus.
+ *
+ * @param[in]     - pI2Cx: Pointer to the I2C register structure.
+ * @param[in]     - ACK_NACK: Indicates whether to send an ACK (1) or NACK (0)
+ *                    after receiving the data byte.
+ *
+ * @return        - The received data byte from the TWDR register.
+ *
+ * @Note          - This function waits until the TWINT flag is set, 
+ *                  indicating that the reception is complete.
+ *********************************************************************/
+static uint8_t I2C_read(I2C_Regs_t *pI2Cx, uint8_t ACK_NACK){
+	
+    pI2Cx->TWCR = ((1 << I2C_TWCR_TWINT) | (1 << I2C_TWCR_TWEN) | (ACK_NACK << I2C_TWCR_TWEA));
+
+    while(!(pI2Cx->TWCR & (1<<I2C_TWCR_TWINT)));
+    return pI2Cx->TWDR;
+}
+
+/*********************************************************************
  * @fn            - I2C_stopCond
  *
  * @brief         - Generates the I2C STOP condition to release the bus.
@@ -260,7 +282,26 @@ void I2C_MasterSendData(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, uint8
  *********************************************************************/
 void I2C_MasterReceiveData(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr, uint8_t Sr)
 {
+    // 1. Generate the START condition
+    if (!I2C_startCond(pI2CInst->pReg))
+        I2C_ErrHandler(pI2CInst, I2C_FLG_BUS_ERR);
 
+    // 2. Send the address of the slave with r/w bit set to w(0) (total 8 bits )
+    if (!I2C_sendAdrr(pI2CInst->pReg, SlaveAddr, I2C_ACTION_READ))
+        I2C_ErrHandler(pI2CInst, I2C_FLG_BUS_ERR);
+
+    // 3. Receive data
+    for (uint8_t i = 0; i < Len; i++) {
+        // Set ACK for all bytes except the last one
+        uint8_t ack = (i < (Len - 1)) ? 1 : 0;
+        
+        // Read the data byte and send ACK/NACK
+        pRxBuffer[i] = I2C_read(pI2CInst->pReg, ack);
+    }
+
+    //4. Generate STOP condition
+    if(Sr == I2C_DISABLE_SR )
+		I2C_stopCond(pI2CInst->pReg);
 }
 
 /*********************************************************************
