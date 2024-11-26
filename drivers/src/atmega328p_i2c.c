@@ -170,7 +170,7 @@ void I2C_Init(I2C_t *pI2CInst)
     }
     
     // Enable I2C module
-    pI2CInst->pReg->TWCR = (1 << I2C_TWCR_TWEA);
+    pI2CInst->pReg->TWCR = (1 << I2C_TWCR_TWEN);
 
     // Enable pull-ups for SDA (PC4) and SCL (PC5)
     *GPIO_i2c_Reg.PORT |= (1 << PIN4) | (PIN5);
