@@ -182,7 +182,7 @@ void I2C_SlaveEnableDisableCallbackEvents(I2C_Regs_t *pI2CRegs, uint8_t EnorDi);
  * Assumes a prescaler value of 1 (TWPS = 0).
  */
 #define I2C_SET_CLOCK(SCL_FREQUENCY, F_CPU) \
-    (((F_CPU) / (16 + (2 * (SCL_FREQUENCY)))) - 8) / 2
+    (((F_CPU) / ((SCL_FREQUENCY) * 2)) - 8)
 
 /*
  * Application callback
