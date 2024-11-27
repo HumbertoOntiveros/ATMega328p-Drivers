@@ -40,8 +40,9 @@ static bool I2C_startCond(I2C_Regs_t *pI2Cx){
 
     while(!(pI2Cx->TWCR & (1<<I2C_TWCR_TWINT)));
 
-    if ((pI2Cx->TWSR & 0xF8) == I2C_FLG_START)
-	    return true;
+if (((pI2Cx->TWSR & 0xF8) == I2C_FLG_START) || ((pI2Cx->TWSR & 0xF8) == I2C_FLG_RSTART))
+    return true;
+
 
 	return false;
  }
@@ -171,8 +172,6 @@ static void I2C_stopCond(I2C_Regs_t *pI2Cx){
  *********************************************************************/
 void I2C_Init(I2C_t *pI2CInst)
 {
-    GPIO_Regs_t GPIO_i2c_Reg = GPIOC;
-
     if (pI2CInst == NULL)
         return; // Invalid pointer, exit the function.
     
@@ -194,8 +193,6 @@ void I2C_Init(I2C_t *pI2CInst)
     // Enable I2C module
     pI2CInst->pReg->TWCR = (1 << I2C_TWCR_TWEN);
 
-    // Enable pull-ups for SDA (PC4) and SCL (PC5)
-    *GPIO_i2c_Reg.PORT |= (1 << PIN4) | (PIN5);
 };
 
 /*********************************************************************
@@ -401,8 +398,10 @@ __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_t *pI2CInst, uint8_t
  *                  the application to handle errors such as arbitration
  *                  loss, bus errors, or NACK reception.
  *********************************************************************/
-__attribute__((weak)) void I2C_ErrHandler(I2C_t *pI2CInst, uint8_t Err) {
+__attribute__((weak)) void I2C_ErrHandler(I2C_t *pI2CInst, uint8_t Err) 
+{
     // User should override this function to handle I2C errors.
+    while (1);    
 }
 
 /*
