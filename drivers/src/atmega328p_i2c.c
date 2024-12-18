@@ -33,15 +33,15 @@
  *                  by configuring the TWCR register and waits for the TWINT
  *                  flag. Ensure the I2C peripheral is properly initialized
  *                  before calling this function.
- *********************************************************************/
-static bool I2C_startCond(I2C_Regs_t *pI2Cx){
-
+ */
+static bool I2C_startCond(I2C_Regs_t *pI2Cx)
+{
     pI2Cx->TWCR = ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWSTA) | (1<<I2C_TWCR_TWEN));
 
     while(!(pI2Cx->TWCR & (1<<I2C_TWCR_TWINT)));
 
-if (((pI2Cx->TWSR & 0xF8) == I2C_FLG_START) || ((pI2Cx->TWSR & 0xF8) == I2C_FLG_RSTART))
-    return true;
+    if (((pI2Cx->TWSR & 0xF8) == I2C_FLG_START) || ((pI2Cx->TWSR & 0xF8) == I2C_FLG_RSTART))
+        return true;
 
 
 	return false;
@@ -64,9 +64,9 @@ if (((pI2Cx->TWSR & 0xF8) == I2C_FLG_START) || ((pI2Cx->TWSR & 0xF8) == I2C_FLG_
  * @Note          - Ensure that a START condition has been generated before
  *                  calling this function. The `action` parameter determines 
  *                  the operation (read/write) for the slave address.
- *********************************************************************/
-static bool I2C_sendAdrr(I2C_Regs_t *pI2Cx, uint8_t adrr, uint8_t action){
-	
+ */
+static bool I2C_sendAdrr(I2C_Regs_t *pI2Cx, uint8_t adrr, uint8_t action)
+{
 	uint8_t cmp = 0;
 	adrr = (adrr << 1 );
 
@@ -103,9 +103,9 @@ static bool I2C_sendAdrr(I2C_Regs_t *pI2Cx, uint8_t adrr, uint8_t action){
  *
  * @Note          - This function sends a byte over the I2C bus and waits
  *                  for the acknowledgment status from the slave device.
- *********************************************************************/
-static bool I2C_write(I2C_Regs_t *pI2Cx, uint8_t data2write){
-	
+ */
+static bool I2C_write(I2C_Regs_t *pI2Cx, uint8_t data2write)
+{
     bool ret = false;
 	
     pI2Cx->TWDR = data2write;
@@ -131,8 +131,9 @@ static bool I2C_write(I2C_Regs_t *pI2Cx, uint8_t data2write){
  *
  * @Note          - This function waits until the TWINT flag is set, 
  *                  indicating that the reception is complete.
- *********************************************************************/
-static uint8_t I2C_read(I2C_Regs_t *pI2Cx, uint8_t ACK_NACK){
+ */
+static uint8_t I2C_read(I2C_Regs_t *pI2Cx, uint8_t ACK_NACK)
+{
 	
     pI2Cx->TWCR = ((1 << I2C_TWCR_TWINT) | (1 << I2C_TWCR_TWEN) | (ACK_NACK << I2C_TWCR_TWEA));
 
@@ -152,8 +153,9 @@ static uint8_t I2C_read(I2C_Regs_t *pI2Cx, uint8_t ACK_NACK){
  * @Note          - This function sets the STOP condition on the I2C bus by
  *                  configuring the TWCR register. Ensure that all communication
  *                  is completed before calling this function.
- *********************************************************************/
-static void I2C_stopCond(I2C_Regs_t *pI2Cx){
+ */
+static void I2C_stopCond(I2C_Regs_t *pI2Cx)
+{
 
 	pI2Cx->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWSTO) | (1<<I2C_TWCR_TWEN));
 }
@@ -169,7 +171,7 @@ static void I2C_stopCond(I2C_Regs_t *pI2Cx){
  *
  * @Note          - Ensure that the I2C clock is enabled and the pin configuration
  *                  is properly set before calling this function.
- *********************************************************************/
+ */
 void I2C_Init(I2C_t *pI2CInst)
 {
     if (pI2CInst == NULL)
@@ -206,7 +208,7 @@ void I2C_Init(I2C_t *pI2CInst)
  *
  * @Note          - Use this function to reset the I2C peripheral for reconfiguration
  *                  or to save power by disabling it when not in use.
- *********************************************************************/
+ */
 void I2C_DeInit(I2C_t *pI2CInst)
 {
     if (pI2CInst == NULL)
@@ -238,7 +240,7 @@ void I2C_DeInit(I2C_t *pI2CInst)
  * @return        - None
  *
  * @Note          - This is a blocking function and waits until transmission completes.
- *********************************************************************/
+ */
 void I2C_MasterSendData(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr)
 {
     // 1. Generate the START condition
@@ -276,7 +278,7 @@ void I2C_MasterSendData(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, uint8
  * @return        - None
  *
  * @Note          - This is a blocking function and waits until reception completes.
- *********************************************************************/
+ */
 void I2C_MasterReceiveData(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr, uint8_t Sr)
 {
     // 1. Generate the START condition
@@ -312,13 +314,25 @@ void I2C_MasterReceiveData(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uin
  * @param[in]     - SlaveAddr: Address of the slave device.
  * @param[in]     - Sr: Repeated start condition flag.
  *
- * @return        - Status of the operation: 0 for success, non-zero for failure.
+ * @return        - None
  *
  * @Note          - This function does not block and uses interrupts for data transmission.
- *********************************************************************/
-uint8_t I2C_MasterSendDataIT(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr)
+ */
+void I2C_MasterSendDataIT(I2C_t *pI2CInst, uint8_t *pTxBuffer, uint32_t Len, uint8_t SlaveAddr, uint8_t Sr)
 {
-    return 0;
+    if ((pI2CInst->TxRxState == I2C_READY) && (Len > 0))
+    {
+        pI2CInst->pTxBuffer = pTxBuffer;
+        pI2CInst->TxLen = Len;
+        pI2CInst->DevAddr = SlaveAddr;
+        pI2CInst->Sr = Sr;
+
+        // Generate START Condition and enable I2C interruptions.
+        pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWSTA) | (1<<I2C_TWCR_TWEN) | (1<<I2C_TWCR_TWIE));
+
+        // Set the I2C state to BUSY in TX mode
+        pI2CInst->TxRxState = I2C_BUSY_IN_TX;
+    }
 }
 
 /*********************************************************************
@@ -332,13 +346,208 @@ uint8_t I2C_MasterSendDataIT(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, 
  * @param[in]     - SlaveAddr: Address of the slave device.
  * @param[in]     - Sr: Repeated start condition flag.
  *
- * @return        - Status of the operation: 0 for success, non-zero for failure.
+ * @return        - None
  *
  * @Note          - This function does not block and uses interrupts for data reception.
- *********************************************************************/
-uint8_t I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr, uint8_t Sr)
+ */
+void I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr, uint8_t Sr)
 {
-    return 0;
+    if ((pI2CInst->TxRxState == I2C_READY) && (Len > 0))
+    {
+        pI2CInst->pRxBuffer = pRxBuffer;
+        pI2CInst->RxLen = Len;
+        pI2CInst->DevAddr = SlaveAddr;
+        pI2CInst->Sr = Sr;
+
+        // Implement code to Generate START Condition and enable I2C interruptions.
+        pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWSTA) | (1<<I2C_TWCR_TWEN) | (1<<I2C_TWCR_TWIE));
+
+        // Set the I2C state to BUSY in RX mode
+        pI2CInst->TxRxState = I2C_BUSY_IN_RX;
+    }
+}
+
+/*********************************************************************
+ * @fn          - I2C_CloseReceiveData
+ *
+ * @brief       - Closes the I2C receive operation and resets internal state.
+ *
+ * @param[in]   - pI2CInst: Pointer to the I2C instance structure.
+ *
+ * @return      - None
+ *
+ * @note        - This function disables I2C interrupts, clears the receive buffer,
+ *                and resets the acknowledgment bit.
+ */
+void I2C_CloseReceiveData(I2C_t *pI2CInst)
+{
+    // Disable I2C interrupts and keeps TWINT set
+    pI2CInst->pReg->TWCR &= ~(1 << I2C_TWCR_TWIE) & ~(1 << I2C_TWCR_TWINT);
+
+    // Clean holders for Rx
+    pI2CInst->TxRxState = I2C_READY;
+    pI2CInst->pRxBuffer = NULL;
+    pI2CInst->RxLen = 0;
+}
+
+/*********************************************************************
+ * @fn          - I2C_CloseSendData
+ *
+ * @brief       - Closes the I2C send operation and resets internal state.
+ *
+ * @param[in]   - pI2CInst: Pointer to the I2C instance structure.
+ *
+ * @return      - None
+ *
+ * @note        - This function disables I2C interrupts and clears the transmit buffer.
+ */
+void I2C_CloseSendData(I2C_t *pI2CInst)
+{
+    // Disable I2C interrupts and keeps TWINT set
+    pI2CInst->pReg->TWCR &= ~(1 << I2C_TWCR_TWIE) & ~(1 << I2C_TWCR_TWINT);
+
+    // Clean holders for Tx
+    pI2CInst->TxRxState = I2C_READY;
+    pI2CInst->pTxBuffer = NULL;
+    pI2CInst->TxLen = 0;
+}
+
+/*********************************************************************
+ * @fn          - I2C_EV_IRQHandling
+ *
+ * @brief       - Handles I2C event interrupts for various transaction states.
+ *
+ * @param[in]   - pI2CInst: Pointer to the I2C instance structure.
+ *
+ * @return      - None
+ *
+ * @note        - Processes events like Start, SLA+W/R ACK, data sent/received,
+ *                and manages state transitions for Tx/Rx operations.
+ */
+void I2C_IRQHandling(I2C_t *pI2CInst)
+{
+    uint8_t status = pI2CInst->pReg->TWSR;
+
+    // 1. Handle For interrupt generated by Start OR Respeated Start event
+    if ((status == I2C_FLG_START) || (status == I2C_FLG_RSTART))
+    {
+        // Send SLA + W/R
+        uint8_t adrr = (pI2CInst->DevAddr << 1);
+
+        adrr = (pI2CInst->TxRxState == I2C_BUSY_IN_TX) ? (adrr & ~1) : (adrr | 1);
+
+        pI2CInst->pReg->TWDR = adrr;
+        pI2CInst->pReg->TWCR &= ~(1<<I2C_TWCR_TWSTA);
+        pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWEN));
+    }
+
+    // 2. Handle For interrupt generated by SLA + W event
+    else if (status == I2C_FLG_SLA_W_ACK)
+    {
+        // Send first data in pI2CInst->pTxBuffer
+        pI2CInst->pReg->TWDR = *pI2CInst->pTxBuffer;
+        pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWEN));
+        pI2CInst->pTxBuffer++;
+        pI2CInst->TxLen--;
+
+    }
+    
+    // 3. Handle For interrup generate by SLA+W, NACK received event
+    else if (status == I2C_FLG_SLA_W_NACK)
+    {
+        I2C_stopCond(pI2CInst->pReg);
+        I2C_CloseSendData(pI2CInst);
+        I2C_ApplicationEventCallback(pI2CInst, I2C_EV_TX_CMPLT);
+    }
+
+    // 4. Handle For interrupt generated by SLA + R event
+    else if (status == I2C_FLG_SLA_R_ACK)
+    {
+        // Configure TWCR: Send ACK or NACK based on RxLen
+        pI2CInst->pReg->TWCR = (1 << I2C_TWCR_TWINT) | (1 << I2C_TWCR_TWEN) | (1<<I2C_TWCR_TWIE) |
+                           ((pI2CInst->RxLen > 1) ? (1 << I2C_TWCR_TWEA) : 0);
+    }
+
+    // 5. Handle For interrup generated by SLA+R, NACK event
+    else if (status == I2C_FLG_SLA_R_NACK)
+    {
+        I2C_stopCond(pI2CInst->pReg);
+        I2C_CloseReceiveData(pI2CInst);
+        I2C_ApplicationEventCallback(pI2CInst, I2C_EV_RX_CMPLT);
+    }
+
+    // 6. Handle For interrupt generated by Data sent, ACK event
+    else if (status == I2C_FLG_DATA_ACK)
+    {
+        if(pI2CInst->TxLen > 0)
+        {
+            // Send next byte of data in pI2CInst->pTxBuffer
+            pI2CInst->pReg->TWDR = *pI2CInst->pTxBuffer;
+            pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWEN));
+            pI2CInst->pTxBuffer++;
+            pI2CInst->TxLen--;
+            return;
+        }
+
+        // Transmission complete, send Stop condition if Sr disabled.
+        if (!pI2CInst->Sr) I2C_stopCond(pI2CInst->pReg);
+        
+        // Reset all the member elements of the handle structure.
+        I2C_CloseSendData(pI2CInst);
+
+        // Notify the application about transmission complete
+        I2C_ApplicationEventCallback(pI2CInst, I2C_EV_TX_CMPLT);
+    }
+
+    // 7. Handle For interrupt generated by Data sent, NACK event
+    else if (status == I2C_FLG_DATA_NACK)
+    {
+        if (!pI2CInst->Sr) I2C_stopCond(pI2CInst->pReg);
+        I2C_CloseSendData(pI2CInst);
+        I2C_ApplicationEventCallback(pI2CInst, I2C_EV_TX_CMPLT);
+    }
+
+    // 8. Handle For interrupt generated by Data recv, ACK event
+    else if (status == I2C_FLG_DATA_R_ACK)
+    {
+        // Read date received
+        *pI2CInst->pRxBuffer = pI2CInst->pReg->TWDR;
+        pI2CInst->pRxBuffer++;
+        pI2CInst->RxLen--;
+
+        // Set ACK for all bytes except the last one
+        uint8_t ack = (pI2CInst->RxLen > 1) ? 1 : 0;
+
+        // Send ACK for next byte if there is more data
+        pI2CInst->pReg->TWCR = ack 
+            ? (pI2CInst->pReg->TWCR | (1 << I2C_TWCR_TWEA))  // Set ACK for next byte
+            : (pI2CInst->pReg->TWCR & ~(1 << I2C_TWCR_TWEA)); // Clear ACK for last byte
+            
+        // Clear TWINT flag
+        pI2CInst->pReg->TWCR |= ((1<<I2C_TWCR_TWINT) | (1<<I2C_TWCR_TWEN));
+    }
+
+    // 9. Handle For interrupt generated by Data recv, NACK event
+    else if (status == I2C_FLG_DATA_R_NACK)
+    {
+        *pI2CInst->pRxBuffer = pI2CInst->pReg->TWDR;
+
+        // Transmission complete, send Stop condition if Sr disabled.
+        if (!pI2CInst->Sr) I2C_stopCond(pI2CInst->pReg);
+            
+        // Reset all the member elements of the handle structure.
+        I2C_CloseReceiveData(pI2CInst);
+
+        // Notify the application about reception complete
+        I2C_ApplicationEventCallback(pI2CInst, I2C_EV_RX_CMPLT);
+    }
+    
+    // 10. Handle For interrupt generated by Illegal START/STOP event
+    else if(status == I2C_FLG_BUS_ERR)
+    {
+        I2C_stopCond(pI2CInst->pReg);
+        I2C_ApplicationEventCallback(pI2CInst, I2C_ERROR_BERR);
+    }
 }
 
 /*********************************************************************
@@ -354,7 +563,7 @@ uint8_t I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len
  * @return        - None
  *
  * @Note          - Modifies the TWEN (Two-wire Enable) bit in the TWCR (Two-wire Control Register).
- *********************************************************************/
+ */
 void I2C_PeripheralControl(I2C_Regs_t *pI2CRegs, uint8_t EnOrDi)
 {
     if(EnOrDi)
@@ -379,9 +588,10 @@ void I2C_PeripheralControl(I2C_Regs_t *pI2CRegs, uint8_t EnOrDi)
  * @Note          - This is a weak function meant to be overridden by
  *                  the application to handle I2C events such as data
  *                  transmission or reception completion.
- *********************************************************************/
-__attribute__((weak)) void I2C_ApplicationEventCallback(I2C_t *pI2CInst, uint8_t AppEv) {
-    // User should override this function to handle I2C application events.
+ */
+__attribute__((weak)) void I2C_ApplicationEventCallback(I2C_t *pI2CInst, uint8_t AppEv) 
+{
+
 }
 
 /*********************************************************************
@@ -397,7 +607,7 @@ __attribute__((weak)) void I2C_ApplicationEventCallback(I2C_t *pI2CInst, uint8_t
  * @Note          - This is a weak function meant to be overridden by
  *                  the application to handle errors such as arbitration
  *                  loss, bus errors, or NACK reception.
- *********************************************************************/
+ */
 __attribute__((weak)) void I2C_ErrHandler(I2C_t *pI2CInst, uint8_t Err) 
 {
     // User should override this function to handle I2C errors.
