@@ -35,13 +35,13 @@ typedef struct
 {
     I2C_Regs_t    *pReg;
     I2C_Config_t  Config;
-    uint8_t       *pTxBuffer;/* !< To store the app. Tx buffer address > */
-    uint8_t       *pRxBuffer;/* !< To store the app. Rx buffer address > */
     uint32_t      TxLen;/* !< To store Tx len > */
     uint32_t      RxLen;/* !< To store Tx len > */
+    uint32_t      RxSize;/* !< To store Rx size  > */
+    uint8_t       *pTxBuffer;/* !< To store the app. Tx buffer address > */
+    uint8_t       *pRxBuffer;/* !< To store the app. Rx buffer address > */
     uint8_t       TxRxState;/* !< To store Communication state > */
     uint8_t       DevAddr;/* !< To store slave/device address > */
-    uint32_t      RxSize;/* !< To store Rx size  > */
     uint8_t       Sr;/* !< To store repeated start value  > */
 }I2C_t;
 
@@ -151,8 +151,8 @@ void I2C_DeInit(I2C_t *pI2CInst);
  */
 void I2C_MasterSendData(I2C_t *pI2CInst, uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr,uint8_t Sr);
 void I2C_MasterReceiveData(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr,uint8_t Sr);
-uint8_t I2C_MasterSendDataIT(I2C_t *pI2CInst,uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr,uint8_t Sr);
-uint8_t I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr,uint8_t Sr);
+void I2C_MasterSendDataIT(I2C_t *pI2CInst,uint8_t *pTxbuffer, uint32_t Len, uint8_t SlaveAddr,uint8_t Sr);
+void I2C_MasterReceiveDataIT(I2C_t *pI2CInst, uint8_t *pRxBuffer, uint8_t Len, uint8_t SlaveAddr,uint8_t Sr);
 
 void I2C_CloseReceiveData(I2C_t *pI2CInst);
 void I2C_CloseSendData(I2C_t *pI2CInst);
@@ -162,17 +162,14 @@ void I2C_SlaveSendData(I2C_Regs_t *pI2CRegs,uint8_t data);
 uint8_t I2C_SlaveReceiveData(I2C_Regs_t *pI2CRegs);
 
 /*
- * IRQ Configuration and ISR handling
+ * ISR handling
  */
-void I2C_IRQInterruptConfig(I2C_t *pI2CInst, uint8_t EnorDi);
-void I2C_EV_IRQHandling(I2C_t *pI2CInst);
-void I2C_ER_IRQHandling(I2C_t *pI2CInst);
+void I2C_IRQHandling(I2C_t *pI2CInst);
 
 /*
  * Other Peripheral Control APIs
  */
 void I2C_PeripheralControl(I2C_Regs_t *pI2CRegs, uint8_t EnOrDi);
-void I2C_GenerateStopCondition(I2C_Regs_t *pI2CRegs);
 void I2C_SlaveEnableDisableCallbackEvents(I2C_Regs_t *pI2CRegs, uint8_t EnorDi);
 
 /*
