@@ -5,9 +5,12 @@
  * Author : JESUS HUMBERTO ONTIVEROS MAYORQUIN
  *
  * Description:
- * Briefly describe the driver's functionality, key configurations,
- * and expected outcomes for user clarity.
- *
+ * This driver provides I2C functionality for the ATmega328P, supporting both 
+ * master and slave modes. Key features include configurable clock speeds, 
+ * interrupt and polling modes, and robust handling of I2C status flags. 
+ * APIs are provided for data transmission and reception, error handling, 
+ * and event-driven callback mechanisms, enabling efficient I2C communication .
+ * 
  */
 
 #ifndef __ATMEGA328P_I2C_H__
