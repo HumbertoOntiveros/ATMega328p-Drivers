@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 010i2c_master_rx_testing.lss # Target in .lss format
-TARGET_HEX       ?= 010i2c_master_rx_testing.hex # Target in .hex format
-TARGET_ELF       ?= 010i2c_master_rx_testing.elf # Target in .elf format
+TARGET_LSS       ?= 011i2c_master_rx_testingIT.lss # Target in .lss format
+TARGET_HEX       ?= 011i2c_master_rx_testingIT.hex # Target in .hex format
+TARGET_ELF       ?= 011i2c_master_rx_testingIT.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -31,6 +31,7 @@ OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        011i2c_master_rx_testingIT.elf \
         010i2c_master_rx_testing.elf \
         009i2c_master_tx_testing.elf \
         008spi_message_rcv_it.elf \
@@ -42,6 +43,7 @@ all:	000pilot_example.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 011i2c_master_rx_testingIT"
 	@echo " - 010i2c_master_rx_testing"
 	@echo " - 009i2c_master_tx_testing"
 	@echo " - 008spi_message_rcv_it"
@@ -68,6 +70,14 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 011i2c_master_rx_testingIT example
+011i2c_master_rx_testingIT.elf: $(EXAMPLES_DIR)/011i2c_master_rx_testingIT.o $(OBJS)
+	@echo "Linking 011i2c_master_rx_testingIT.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 011i2c_master_rx_testingIT..."
+	$(OBJCOPY) 011i2c_master_rx_testingIT.elf 011i2c_master_rx_testingIT.hex -O ihex
+	@echo "Build complete: 011i2c_master_rx_testingIT.elf"
 
 #  Build 010i2c_master_rx_testing example
 010i2c_master_rx_testing.elf: $(EXAMPLES_DIR)/010i2c_master_rx_testing.o $(OBJS)
