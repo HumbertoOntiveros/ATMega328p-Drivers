@@ -1,12 +1,13 @@
 /*
  * @file              atmega328p_i2c.c
  *
- * @brief             XXXXX driver implementation for ATmega328P microcontroller.
+ * @brief             I2C driver implementation for ATmega328P microcontroller.
  *
- * @details           This file provides the implementation of functions to initialize, 
- *                    de-initialize, etc, etc, XXXX for the ATmega328P.
- *                    It defines all the APIs to manage XXXX peripherals including
- *                    initialization, data handling, and XXXXX operations.
+ * @details           This driver provides I2C functionality for the ATmega328P, supporting both 
+ *                    master and slave modes. Key features include configurable clock speeds, 
+ *                    interrupt and polling modes, and robust handling of I2C status flags. 
+ *                    APIs are provided for data transmission and reception, error handling, 
+ *                    and event-driven callback mechanisms, enabling efficient I2C communication .
  *
  * @author            JESUS HUMBERTO ONTIVEROS MAYORQUIN
  * @date              19/11/2024 14:22:47
