@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 011i2c_master_rx_testingIT.lss # Target in .lss format
-TARGET_HEX       ?= 011i2c_master_rx_testingIT.hex # Target in .hex format
-TARGET_ELF       ?= 011i2c_master_rx_testingIT.elf # Target in .elf format
+TARGET_LSS       ?= 012i2c_slave_tx_string.lss # Target in .lss format
+TARGET_HEX       ?= 012i2c_slave_tx_string.hex # Target in .hex format
+TARGET_ELF       ?= 012i2c_slave_tx_string.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -31,6 +31,7 @@ OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        012i2c_slave_tx_string.elf \
         011i2c_master_rx_testingIT.elf \
         010i2c_master_rx_testing.elf \
         009i2c_master_tx_testing.elf \
@@ -43,6 +44,7 @@ all:	000pilot_example.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 012i2c_slave_tx_string"
 	@echo " - 011i2c_master_rx_testingIT"
 	@echo " - 010i2c_master_rx_testing"
 	@echo " - 009i2c_master_tx_testing"
@@ -70,6 +72,14 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 012i2c_slave_tx_string example
+012i2c_slave_tx_string.elf: $(EXAMPLES_DIR)/012i2c_slave_tx_string.o $(OBJS)
+	@echo "Linking 012i2c_slave_tx_string.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 012i2c_slave_tx_string..."
+	$(OBJCOPY) 012i2c_slave_tx_string.elf 012i2c_slave_tx_string.hex -O ihex
+	@echo "Build complete: 012i2c_slave_tx_string.elf"
 
 #  Build 011i2c_master_rx_testingIT example
 011i2c_master_rx_testingIT.elf: $(EXAMPLES_DIR)/011i2c_master_rx_testingIT.o $(OBJS)
