@@ -133,6 +133,13 @@
  * Base addresses of I2C peripheral.
  */
 #define I2C_BASEADDR    0XB8
+
+/*
+ * USART Registers for ATmega328P
+ * Base addresses of USART peripheral.
+ */
+#define USART_BASEADDR    0XC0
+
 /******************************************************************************************
  *                        Peripheral Register Definition Structures                       *
  ******************************************************************************************/
@@ -173,6 +180,21 @@ typedef struct
 
 }I2C_Regs_t;
 
+/*
+ * peripheral register definition structure for USART
+ */
+typedef struct
+{
+    volatile uint8_t UCSR0A;
+    volatile uint8_t UCSR0B;
+    volatile uint8_t UCSR0C;
+    volatile uint8_t RESVD;
+    volatile uint8_t UBRR0L;
+    volatile uint8_t UBRR0H;
+    volatile uint8_t UDR0;
+
+}USART_Regs_t;
+
 /******************************************************************************************
  *                                  Peripheral Definitions                                *
  ******************************************************************************************/
@@ -209,6 +231,11 @@ typedef struct
  * I2C peripheral for ATmega328p
  */
 #define I2C     ((I2C_Regs_t *)I2C_BASEADDR)
+ 
+ /*
+ * USART peripheral for ATmega328p
+ */
+#define USART     ((USART_Regs_t *)USART_BASEADDR)
 
 /******************************************************************************************
  *                         Bit position definitions of peripherals                        *
@@ -334,6 +361,45 @@ typedef struct
 #define I2C_TWAMR_TWAM5   5
 #define I2C_TWAMR_TWAM6   6
 #define I2C_TWAMR_TWAM7   7
+
+/*
+ * Bit position definitions of USART peripherals
+ */
+/*
+ * Bit position definitions for USART UCSR0A REG
+ */
+#define USART_UCSR0A_MPCM0    0
+#define USART_UCSR0A_U2X0     1
+#define USART_UCSR0A_UPE0     2
+#define USART_UCSR0A_DOR0     3
+#define USART_UCSR0A_FE0      4
+#define USART_UCSR0A_UDRE0    5
+#define USART_UCSR0A_TXC0     6
+#define USART_UCSR0A_RXC0     7
+
+/*
+ * Bit position definition for USART UCSR0B REG
+ */
+#define USART_UCSR0B_TXB80    0
+#define USART_UCSR0B_RXB80    1
+#define USART_UCSR0B_UCSZ02   2
+#define USART_UCSR0B_TXEN0    3
+#define USART_UCSR0B_RXEN0    4
+#define USART_UCSR0B_UDRIE0   5
+#define USART_UCSR0B_TXCIE0   6
+#define USART_UCSR0B_RXCIE0   7
+
+/*
+ * Bit position definition for USART UCSR0C REG
+ */
+#define USART_UCSR0C_UCPOL0   0
+#define USART_UCSR0C_UCSZ00   1
+#define USART_UCSR0C_UCSZ01   2
+#define USART_UCSR0C_USBS0    3
+#define USART_UCSR0C_UPM00    4
+#define USART_UCSR0C_UPM01    5
+#define USART_UCSR0C_UMSEL00  6
+#define USART_UCSR0C_UMSEL01  7
 
 /*
  * Generic Macros Definition
