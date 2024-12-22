@@ -25,6 +25,7 @@ MONITOR_PATH     := ./scripts/serial_monitor.ps1
 
 # Source files
 OBJS =  $(SRC_DIR)/syscalls.o
+OBJS += $(SRC_DIR)/atmega328p_usart.o
 OBJS += $(SRC_DIR)/atmega328p_i2c.o
 OBJS += $(SRC_DIR)/atmega328p_spi.o
 OBJS += $(SRC_DIR)/atmega328p_gpio.o
