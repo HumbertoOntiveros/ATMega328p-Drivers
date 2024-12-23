@@ -29,7 +29,7 @@ typedef struct
     uint8_t  USART_NoOfStopBits;
     uint8_t  USART_WordLength;
     uint8_t  USART_ParityControl;
-    uint32_t USART_Baud;
+    uint16_t USART_Baud;
 }USART_Config_t;
 
 /*
@@ -59,29 +59,27 @@ typedef struct
  *@USART_Baud
  *Possible options for USART_Baud
  */			
-#define USART_STD_BAUD_2400				
-#define USART_STD_BAUD_4800				
-#define USART_STD_BAUD_9600				
-#define USART_STD_BAUD_14400				
-#define USART_STD_BAUD_19200 			
-#define USART_STD_BAUD_28800 			
-#define USART_STD_BAUD_38400 			
-#define USART_STD_BAUD_57600 			
-#define USART_STD_BAUD_76800 			
-#define USART_STD_BAUD_115200 			
-#define USART_STD_BAUD_230400  			
-#define USART_STD_BAUD_250000  			
-#define USART_STD_BAUD_500000 						
-#define SUART_STD_BAUD_1M 			
-#define USART_STD_BAUD_2M 				
-
+#define USART_STD_BAUD_2400     0x01A0  // UBRRn: 416 (2400 bps)
+#define USART_STD_BAUD_4800     0x00CF  // UBRRn: 207 (4800 bps)
+#define USART_STD_BAUD_9600     0x0067  // UBRRn: 103 (9600 bps)
+#define USART_STD_BAUD_14400    0x0044  // UBRRn: 68  (14400 bps)
+#define USART_STD_BAUD_19200    0x0033  // UBRRn: 51  (19200 bps)
+#define USART_STD_BAUD_28800    0x0022  // UBRRn: 34  (28800 bps)
+#define USART_STD_BAUD_38400    0x0019  // UBRRn: 25  (38400 bps)
+#define USART_STD_BAUD_57600    0x0010  // UBRRn: 16  (57600 bps)
+#define USART_STD_BAUD_76800    0x000C  // UBRRn: 12  (76800 bps)
+#define USART_STD_BAUD_115200   0x0008  // UBRRn: 8   (115200 bps)
+#define USART_STD_BAUD_230400   0x0003  // UBRRn: 3   (230400 bps)
+#define USART_STD_BAUD_250000   0x0003  // UBRRn: 3   (250000 bps)
+#define USART_STD_BAUD_500000   0x0001  // UBRRn: 1   (500000 bps)
+#define USART_STD_BAUD_1M       0x0000  // UBRRn: 0   (1M bps)
 
 /*
  *@USART_ParityControl
  *Possible options for USART_ParityControl
  */
-#define USART_PARITY_EN_ODD     2
-#define USART_PARITY_EN_EVEN    1
+#define USART_PARITY_EN_ODD     3
+#define USART_PARITY_EN_EVEN    2
 #define USART_PARITY_DISABLE    0
 
 /*
