@@ -18,17 +18,214 @@
 #include "atmega328p_usart.h"
 
 /*********************************************************************
- * @fn            - 
+ * @fn            - USART_Init
  *
- * @brief             - 
+ * @brief         - Initializes the USART peripheral with the specified configurations.
+ *                 This includes setting the mode (e.g., TX, RX), number of stop bits,
+ *                 word length, parity control, and baud rate as defined in the configuration structure.
  *
- * @param[in]         - 
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
  *
- * @return            - 
+ * @return        - None
  *
- * @Note              -
+ * @Note          - Ensure that the USART clock is enabled before calling this function.
  */
+void USART_Init(USART_t *pUSARTInst)
+{
+    // Implementation here
+}
 
+/*********************************************************************
+ * @fn            - USART_DeInit
+ *
+ * @brief         - Deinitializes the USART peripheral and resets its registers.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ *
+ * @return        - None
+ *
+ * @Note          - This function resets the USART to its default state.
+ */
+void USART_DeInit(USART_t *pUSARTInst)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_SendData
+ *
+ * @brief         - Sends data via USART in blocking mode.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ * @param[in]     - pTxBuffer: Pointer to the transmission buffer.
+ * @param[in]     - Len: Length of the data to be sent.
+ *
+ * @return        - None
+ *
+ * @Note          - Blocks until all data is sent.
+ */
+void USART_SendData(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_ReceiveData
+ *
+ * @brief         - Receives data via USART in blocking mode.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ * @param[in]     - pRxBuffer: Pointer to the reception buffer.
+ * @param[in]     - Len: Length of the data to be received.
+ *
+ * @return        - None
+ *
+ * @Note          - Blocks until all data is received.
+ */
+void USART_ReceiveData(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Len)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_SendDataIT
+ *
+ * @brief         - Sends data via USART in interrupt mode.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ * @param[in]     - pTxBuffer: Pointer to the transmission buffer.
+ * @param[in]     - Len: Length of the data to be sent.
+ *
+ * @return        - USART_BUSY_IN_TX if transmission is ongoing, USART_READY otherwise.
+ *
+ * @Note          - This function uses interrupts for data transmission.
+ */
+uint8_t USART_SendDataIT(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
+{
+    // Implementation here
+    return USART_READY;
+}
+
+/*********************************************************************
+ * @fn            - USART_ReceiveDataIT
+ *
+ * @brief         - Receives data via USART in interrupt mode.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ * @param[in]     - pRxBuffer: Pointer to the reception buffer.
+ * @param[in]     - Len: Length of the data to be received.
+ *
+ * @return        - USART_BUSY_IN_RX if reception is ongoing, USART_READY otherwise.
+ *
+ * @Note          - This function uses interrupts for data reception.
+ */
+uint8_t USART_ReceiveDataIT(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Len)
+{
+    // Implementation here
+    return USART_READY;
+}
+
+/*********************************************************************
+ * @fn            - USART_IRQHandling
+ *
+ * @brief         - Handles USART interrupts.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ *
+ * @return        - None
+ *
+ * @Note          - This function should be called inside the ISR.
+ */
+void USART_IRQHandling(USART_t *pUSARTInst)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_GetFlagStatus
+ *
+ * @brief         - Checks the status of a specified USART flag.
+ *
+ * @param[in]     - pUSARTRegs: Pointer to the USART registers.
+ * @param[in]     - StatusFlagName: Name of the flag to check.
+ *
+ * @return        - Flag status (SET or RESET).
+ *
+ * @Note          - None
+ */
+uint8_t USART_GetFlagStatus(USART_Regs_t *pUSARTRegs, uint8_t StatusFlagName)
+{
+    // Implementation here
+    return 0;
+}
+
+/*********************************************************************
+ * @fn            - USART_ClearFlag
+ *
+ * @brief         - Clears a specified USART flag.
+ *
+ * @param[in]     - pUSARTRegs: Pointer to the USART registers.
+ * @param[in]     - StatusFlagName: Name of the flag to clear.
+ *
+ * @return        - None
+ *
+ * @Note          - Ensure the flag supports clearing by software.
+ */
+void USART_ClearFlag(USART_Regs_t *pUSARTRegs, uint16_t StatusFlagName)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_PeripheralControl
+ *
+ * @brief         - Enables or disables the USART peripheral.
+ *
+ * @param[in]     - pUSARTRegs: Pointer to the USART registers.
+ * @param[in]     - EnOrDi: ENABLE or DISABLE macros.
+ *
+ * @return        - None
+ *
+ * @Note          - Ensure proper configuration before enabling the peripheral.
+ */
+void USART_PeripheralControl(USART_Regs_t *pUSARTRegs, uint8_t EnOrDi)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_SetBaudRate
+ *
+ * @brief         - Configures the baud rate for USART communication.
+ *
+ * @param[in]     - pUSARTRegs: Pointer to the USART registers.
+ * @param[in]     - BaudRate: Desired baud rate value.
+ *
+ * @return        - None
+ *
+ * @Note          - Ensure the baud rate value is valid.
+ */
+void USART_SetBaudRate(USART_Regs_t *pUSARTRegs, uint32_t BaudRate)
+{
+    // Implementation here
+}
+
+/*********************************************************************
+ * @fn            - USART_ApplicationEventCallback
+ *
+ * @brief         - Weak implementation of the application event callback.
+ *
+ * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
+ * @param[in]     - ApEv: Event ID.
+ *
+ * @return        - None
+ *
+ * @Note          - The user application should override this function if required.
+ */
+__attribute__((weak)) void USART_ApplicationEventCallback(USART_t *pUSARTInst, uint8_t ApEv)
+{
+    // Implementation here
+}
 
 /*
  * MIT License
