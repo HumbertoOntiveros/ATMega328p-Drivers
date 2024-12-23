@@ -23,6 +23,8 @@
  * @brief         - Initializes the USART peripheral with the specified configurations.
  *                 This includes setting the mode (e.g., TX, RX), number of stop bits,
  *                 word length, parity control, and baud rate as defined in the configuration structure.
+ *                 
+ *                 The baud rate is configured considering a system clock of 16 MHz.
  *
  * @param[in]     - pUSARTInst: Pointer to the USART handle structure.
  *
@@ -32,8 +34,39 @@
  */
 void USART_Init(USART_t *pUSARTInst)
 {
-    // Implementation here
+    // Configure the USART mode (RX, TX, or RX/TX).
+    uint8_t ucsr0b = 0;
+    if (pUSARTInst->Config.USART_Mode != USART_MODE_ONLY_TX)
+        ucsr0b |= (1 << USART_UCSR0B_RXEN0);  // Enable RX if needed.
+    if (pUSARTInst->Config.USART_Mode != USART_MODE_ONLY_RX)
+        ucsr0b |= (1 << USART_UCSR0B_TXEN0);  // Enable TX if needed.
+    pUSARTInst->pReg->UCSR0B = ucsr0b;
+
+    // Configure the USART word length (5, 6, 7, or 8 bits).
+    pUSARTInst->pReg->UCSR0C = (pUSARTInst->Config.USART_WordLength & 0x03) << USART_UCSR0C_UCSZ00;
+
+    // If 9 bits word length, set the UCSZ02 bit.
+    if (pUSARTInst->Config.USART_WordLength == USART_WORDLEN_9BITS)
+        pUSARTInst->pReg->UCSR0B |= (1 << USART_UCSR0B_UCSZ02);
+    else
+        pUSARTInst->pReg->UCSR0B &= ~(1 << USART_UCSR0B_UCSZ02);
+
+    // Configure the number of stop bits.
+    if (pUSARTInst->Config.USART_NoOfStopBits == USART_STOPBITS_2)
+        pUSARTInst->pReg->UCSR0C |= (1 << USART_UCSR0C_USBS0);
+    else
+        pUSARTInst->pReg->UCSR0C &= ~(1 << USART_UCSR0C_USBS0);
+
+    // Configure the parity control (even/odd/no parity).
+    pUSARTInst->pReg->UCSR0C |= (pUSARTInst->Config.USART_ParityControl & 0x30) << USART_UCSR0C_UPM00;
+
+    // Configure the USART baud rate.
+    // The baud rate is calculated based on the system clock (16 MHz).
+    uint16_t baud = pUSARTInst->Config.USART_Baud;
+    pUSARTInst->pReg->UBRR0L = (uint8_t)(baud & 0x00FF);
+    pUSARTInst->pReg->UBRR0H = (uint8_t)((baud >> 8) & 0x0F);
 }
+
 
 /*********************************************************************
  * @fn            - USART_DeInit
@@ -48,7 +81,11 @@ void USART_Init(USART_t *pUSARTInst)
  */
 void USART_DeInit(USART_t *pUSARTInst)
 {
-    // Implementation here
+    // Reset all USART registers to zero
+    pUSARTInst->pReg->UCSR0B = 0x00;
+    pUSARTInst->pReg->UCSR0C = 0x00;
+    pUSARTInst->pReg->UBRR0L = 0x00;
+    pUSARTInst->pReg->UBRR0H = 0x00;
 }
 
 /*********************************************************************
@@ -66,7 +103,26 @@ void USART_DeInit(USART_t *pUSARTInst)
  */
 void USART_SendData(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
 {
-    // Implementation here
+    // Loop through the data to be sent
+    for(uint32_t i = 0; i < Len; i++)
+    {
+        // Wait until the transmit buffer is ready for new data
+        while(!(pUSARTInst->pReg->UCSR0A & (1 << USART_UCSR0A_UDRE0)));
+
+        // Handle 9-bit data transmission
+        if(pUSARTInst->Config.USART_WordLength == USART_WORDLEN_9BITS)
+        {
+            // Set TXB80 bit based on the 9th data bit (MSB)
+            pUSARTInst->pReg->UCSR0B = (pUSARTInst->pReg->UCSR0B & ~(1 << USART_UCSR0B_TXB80)) |
+                                       ((*pTxBuffer & 0x0100) >> 8); // TXB80 is the MSB of the data
+        }
+
+        // Transmit the lower 8 bits of the data
+        pUSARTInst->pReg->UDR0 = (uint8_t)(*pTxBuffer & 0xFF);
+
+        // Move to the next byte in the buffer
+        pTxBuffer++;
+    }
 }
 
 /*********************************************************************
