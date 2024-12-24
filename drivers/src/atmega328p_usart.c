@@ -140,7 +140,30 @@ void USART_SendData(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
  */
 void USART_ReceiveData(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Len)
 {
-    // Implementation here
+    // Loop through the length of data to be received
+    for (uint32_t i = 0; i < Len; i++)
+    {
+        // Wait until there is data in the receive buffer
+        while (!(pUSARTInst->pReg->UCSR0A & (1 << USART_UCSR0A_RXC0)));
+
+        // Handle 9-bit data reception
+        if (pUSARTInst->Config.USART_WordLength == USART_WORDLEN_9BITS)
+        {
+            // Read the 9th bit from the RXB80 register
+            uint8_t ninthBit = (pUSARTInst->pReg->UCSR0B & (1 << USART_UCSR0B_RXB80)) << 7;
+
+            // Read the lower 8 bits from the UDR0 register
+            *pRxBuffer = (ninthBit | pUSARTInst->pReg->UDR0) & 0x01FF;
+        }
+        else
+        {
+            // Read the received data (8 bits)
+            *pRxBuffer = pUSARTInst->pReg->UDR0;
+        }
+
+        // Move to the next byte in the buffer
+        pRxBuffer++;
+    }
 }
 
 /*********************************************************************
@@ -246,7 +269,16 @@ void USART_ClearFlag(USART_Regs_t *pUSARTRegs, uint16_t StatusFlagName)
  */
 void USART_PeripheralControl(USART_Regs_t *pUSARTRegs, uint8_t EnOrDi)
 {
-    // Implementation here
+    if (EnOrDi == ENABLE)
+    {
+        // Enable the USART by setting the RXEN0 and TXEN0 bits in UCSR0B
+        pUSARTRegs->UCSR0B |= (1 << USART_UCSR0B_RXEN0) | (1 << USART_UCSR0B_TXEN0);
+    }
+    else if (EnOrDi == DISABLE)
+    {
+        // Disable the USART by clearing the RXEN0 and TXEN0 bits in UCSR0B
+        pUSARTRegs->UCSR0B &= ~((1 << USART_UCSR0B_RXEN0) | (1 << USART_UCSR0B_TXEN0));
+    }
 }
 
 /*********************************************************************
