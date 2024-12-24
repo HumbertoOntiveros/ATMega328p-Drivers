@@ -9,8 +9,36 @@
  * and expected outcomes for user clarity.
  *
  */
+#include "string.h"
+#include "atmega328p_gpio.h"
+#include "atmega328p_usart.h"
 
-#include "atmega328p_xxxx.h"
+char msg[1024] = "UART Tx testing...\n\r";
+
+USART_t uart_device;
+
+void UART_Inits(void)
+{
+    uart_device.pReg = USART;
+    uart_device.Config.USART_Baud = USART_STD_BAUD_115200;
+    uart_device.Config.USART_Mode = USART_MODE_ONLY_TX;
+    uart_device.Config.USART_NoOfStopBits = USART_STOPBITS_1;
+    uart_device.Config.USART_ParityControl = USART_PARITY_DISABLE;
+    uart_device.Config.USART_WordLength = USART_WORDLEN_8BITS;
+
+    USART_Init(&uart_device);
+}
+
+void GPIO_ButtonInit(GPIO_t *button)
+{
+
+    button->GPIOX           = GPIOD;
+    button->GPIO_Pin.Number = PIN7;
+    button->GPIO_Pin.Mode   = MODE_IN;
+    button->GPIO_Pin.PullUp = PULLUP_ENABLED;
+	
+    GPIO_Init(*button);
+}
 
 void Delay_ms(uint32_t ms) {
     // Assuming the ATmega328P has a 16 MHz clock 
@@ -22,10 +50,29 @@ void Delay_ms(uint32_t ms) {
 
 int main(void) {
     // Initialize necessary components
+    GPIO_t button;
+
+    // Button Init
+    GPIO_ButtonInit(&button);
+
+    // UART Init
+    UART_Inits();
+
+    // Enable the USART peripheral
+    USART_PeripheralControl(uart_device.pReg, ENABLE);
 
     while (1) {
-        // Main loop
+
+		// wait till button is pressed
+		while(GPIO_ReadPin(button));
+
+        // to avoid button de-bouncing related issues 200ms of delay
+        Delay_ms(200);
+
+        // Send data
+        USART_SendData(&uart_device, (uint8_t*)msg, strlen(msg));
     }
+
     return 0;
 }
 
