@@ -181,7 +181,19 @@ void USART_ReceiveData(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Len)
  */
 uint8_t USART_SendDataIT(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
 {
-    // Implementation here
+    if (pUSARTInst->TxBusyState == USART_BUSY_IN_TX)
+    {
+        return USART_BUSY_IN_TX;
+    }
+
+    // Save transmission details
+    pUSARTInst->pTxBuffer = pTxBuffer;
+    pUSARTInst->TxLen = Len;
+    pUSARTInst->TxBusyState = USART_BUSY_IN_TX;
+
+    // Enable Data Register Empty interrupt (UDRIE)
+    pUSARTInst->pReg->UCSR0B |= (1 << USART_UCSR0B_UDRIE0);
+
     return USART_READY;
 }
 
@@ -200,7 +212,19 @@ uint8_t USART_SendDataIT(USART_t *pUSARTInst, uint8_t *pTxBuffer, uint32_t Len)
  */
 uint8_t USART_ReceiveDataIT(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Len)
 {
-    // Implementation here
+    if (pUSARTInst->RxBusyState == USART_BUSY_IN_RX)
+    {
+        return USART_BUSY_IN_RX;
+    }
+
+    // Save reception details
+    pUSARTInst->pRxBuffer = pRxBuffer;
+    pUSARTInst->RxLen = Len;
+    pUSARTInst->RxBusyState = USART_BUSY_IN_RX;
+
+    // Enable RX Complete interrupt (RXCIE)
+    pUSARTInst->pReg->UCSR0B |= (1 << USART_UCSR0B_RXCIE0);
+
     return USART_READY;
 }
 
@@ -217,42 +241,58 @@ uint8_t USART_ReceiveDataIT(USART_t *pUSARTInst, uint8_t *pRxBuffer, uint32_t Le
  */
 void USART_IRQHandling(USART_t *pUSARTInst)
 {
-    // Implementation here
-}
+    uint8_t status = pUSARTInst->pReg->UCSR0A;
 
-/*********************************************************************
- * @fn            - USART_GetFlagStatus
- *
- * @brief         - Checks the status of a specified USART flag.
- *
- * @param[in]     - pUSARTRegs: Pointer to the USART registers.
- * @param[in]     - StatusFlagName: Name of the flag to check.
- *
- * @return        - Flag status (SET or RESET).
- *
- * @Note          - None
- */
-uint8_t USART_GetFlagStatus(USART_Regs_t *pUSARTRegs, uint8_t StatusFlagName)
-{
-    // Implementation here
-    return 0;
-}
+    // Handle Data Register Empty interrupt
+    if ((status & (1 << USART_UCSR0A_UDRE0)) && (pUSARTInst->pReg->UCSR0B & (1 << USART_UCSR0B_UDRIE0)))
+    {
+        if (pUSARTInst->TxLen > 0)
+        {
+            // Send the next byte
+            pUSARTInst->pReg->UDR0 = *(pUSARTInst->pTxBuffer++);
+            pUSARTInst->TxLen--;
+        }
+        else
+        {
+            // Transmission complete, disable UDRIE
+            pUSARTInst->pReg->UCSR0B &= ~(1 << USART_UCSR0B_UDRIE0);
 
-/*********************************************************************
- * @fn            - USART_ClearFlag
- *
- * @brief         - Clears a specified USART flag.
- *
- * @param[in]     - pUSARTRegs: Pointer to the USART registers.
- * @param[in]     - StatusFlagName: Name of the flag to clear.
- *
- * @return        - None
- *
- * @Note          - Ensure the flag supports clearing by software.
- */
-void USART_ClearFlag(USART_Regs_t *pUSARTRegs, uint16_t StatusFlagName)
-{
-    // Implementation here
+            // Enable TX Complete interrupt (TXCIE)
+            pUSARTInst->pReg->UCSR0B |= (1 << USART_UCSR0B_TXCIE0);
+        }
+    }
+
+    // Handle TX Complete interrupt
+    if ((status & (1 << USART_UCSR0A_TXC0)) && (pUSARTInst->pReg->UCSR0B & (1 << USART_UCSR0B_TXCIE0)))
+    {
+        // Transmission fully completed, disable TXCIE
+        pUSARTInst->pReg->UCSR0B &= ~(1 << USART_UCSR0B_TXCIE0);
+        pUSARTInst->TxBusyState = USART_READY;
+
+        // Notify application of TX complete
+        USART_ApplicationEventCallback(pUSARTInst, USART_EVENT_TX_CMPLT);
+    }
+
+    // Handle RX Complete interrupt
+    if ((status & (1 << USART_UCSR0A_RXC0)) && (pUSARTInst->pReg->UCSR0B & (1 << USART_UCSR0B_RXCIE0)))
+    {
+        if (pUSARTInst->RxLen > 0)
+        {
+            // Read the received byte
+            *(pUSARTInst->pRxBuffer++) = pUSARTInst->pReg->UDR0;
+            pUSARTInst->RxLen--;
+
+            if (pUSARTInst->RxLen == 0)
+            {
+                // Reception complete, disable RXCIE
+                pUSARTInst->pReg->UCSR0B &= ~(1 << USART_UCSR0B_RXCIE0);
+                pUSARTInst->RxBusyState = USART_READY;
+
+                // Notify application of RX complete
+                USART_ApplicationEventCallback(pUSARTInst, USART_EVENT_RX_CMPLT);
+            }
+        }
+    }
 }
 
 /*********************************************************************
@@ -279,23 +319,6 @@ void USART_PeripheralControl(USART_Regs_t *pUSARTRegs, uint8_t EnOrDi)
         // Disable the USART by clearing the RXEN0 and TXEN0 bits in UCSR0B
         pUSARTRegs->UCSR0B &= ~((1 << USART_UCSR0B_RXEN0) | (1 << USART_UCSR0B_TXEN0));
     }
-}
-
-/*********************************************************************
- * @fn            - USART_SetBaudRate
- *
- * @brief         - Configures the baud rate for USART communication.
- *
- * @param[in]     - pUSARTRegs: Pointer to the USART registers.
- * @param[in]     - BaudRate: Desired baud rate value.
- *
- * @return        - None
- *
- * @Note          - Ensure the baud rate value is valid.
- */
-void USART_SetBaudRate(USART_Regs_t *pUSARTRegs, uint32_t BaudRate)
-{
-    // Implementation here
 }
 
 /*********************************************************************
