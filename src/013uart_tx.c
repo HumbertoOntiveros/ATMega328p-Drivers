@@ -5,8 +5,10 @@
  * Author : JESUS HUMBERTO ONTIVEROS MAYORQUIN
  *
  * Description:
- * Briefly describe the example's functionality, key configurations,
- * and expected outcomes for user clarity.
+ * This example demonstrates UART transmission using the ATmega328P.
+ * A message is sent over UART whenever a button connected to PIN7 is pressed.
+ * Key features include button debouncing with a 200 ms delay and UART 
+ * initialization at 115200 baud rate in transmit-only mode.
  *
  */
 #include "string.h"
