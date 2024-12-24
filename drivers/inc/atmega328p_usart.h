@@ -149,11 +149,7 @@ void USART_IRQHandling(USART_t *pUSARTInst);
 /*
  * Other Peripheral Control APIs
  */
-uint8_t USART_GetFlagStatus(USART_Regs_t *pUSARTRegs, uint8_t StatusFlagName);
-void USART_ClearFlag(USART_Regs_t *pUSARTRegs, uint16_t StatusFlagName);
 void USART_PeripheralControl(USART_Regs_t *pUSARTRegs, uint8_t EnOrDi);
-void USART_SetBaudRate(USART_Regs_t *pUSARTRegs, uint32_t BaudRate);
-
 
 /*
  * Application Callbacks
