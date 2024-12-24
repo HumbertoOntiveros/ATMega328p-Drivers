@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 012i2c_slave_tx_string.lss # Target in .lss format
-TARGET_HEX       ?= 012i2c_slave_tx_string.hex # Target in .hex format
-TARGET_ELF       ?= 012i2c_slave_tx_string.elf # Target in .elf format
+TARGET_LSS       ?= 013uart_tx.lss # Target in .lss format
+TARGET_HEX       ?= 013uart_tx.hex # Target in .hex format
+TARGET_ELF       ?= 013uart_tx.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -32,6 +32,7 @@ OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        013uart_tx.elf \
         012i2c_slave_tx_string.elf \
         011i2c_master_rx_testingIT.elf \
         010i2c_master_rx_testing.elf \
@@ -45,6 +46,7 @@ all:	000pilot_example.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 013uart_tx"
 	@echo " - 012i2c_slave_tx_string"
 	@echo " - 011i2c_master_rx_testingIT"
 	@echo " - 010i2c_master_rx_testing"
@@ -73,6 +75,14 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 013uart_tx example
+013uart_tx.elf: $(EXAMPLES_DIR)/013uart_tx.o $(OBJS)
+	@echo "Linking 013uart_tx.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 013uart_tx..."
+	$(OBJCOPY) 013uart_tx.elf 013uart_tx.hex -O ihex
+	@echo "Build complete: 013uart_tx.elf"
 
 #  Build 012i2c_slave_tx_string example
 012i2c_slave_tx_string.elf: $(EXAMPLES_DIR)/012i2c_slave_tx_string.o $(OBJS)
