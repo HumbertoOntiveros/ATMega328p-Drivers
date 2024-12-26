@@ -14,6 +14,8 @@
 #ifndef __DS1307_H__
 #define __DS1307_H__
 
+#include<stdint.h>
+#include<string.h>
 #include "atmega328p_i2c.h"
 
 /******************************************************************************************
@@ -24,7 +26,7 @@
  * Define I2C interface and communication speed for DS1307.
  */
 #define DS1307_I2C  			I2C
-#define DS1307_I2C_SPEED 		I2C_SCL_SPEED_SM
+#define DS1307_I2C_SPEED 		I2C_SCL_SPEED_100k
 
 /*
  * Register addresses
