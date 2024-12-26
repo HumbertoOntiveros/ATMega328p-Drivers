@@ -1,7 +1,7 @@
 /*
  * @file              ds1307.c
  *
- * @brief             XXXXX driver implementation for ATmega328P microcontroller.
+ * @brief             ds1307 driver implementation for ATmega328P microcontroller.
  *
  * @details            Driver for DS1307 RTC module, providing I2C communication for setting and reading time and date.
  *                     Configurable time format (12-hour, 24-hour) and I2C speed. Supports initialization, time, 
