@@ -101,7 +101,7 @@ int main(void) {
 	UART_Init(MY_UBRR);
 	stdout = &uart_stdout;
 	
-	printf("RTC test\n");
+	printf("RTC test\n\r");
 #else
 	lcd_init();
 
@@ -115,7 +115,7 @@ int main(void) {
 #endif
 
 	if(ds1307_init()){
-		printf("RTC init has failed\n");
+		printf("RTC init has failed\n\r");
 		while(1);
 	}
 
@@ -139,21 +139,21 @@ int main(void) {
 	if(current_time.time_format != TIME_FORMAT_24HRS){
 		am_pm = (current_time.time_format) ? "PM" : "AM";
 #ifndef PRINT_LCD
-		printf("Current time = %s %s\n",time_to_string(&current_time),am_pm); // 04:25:41 PM
+		printf("Current time = %s %s\n\r",time_to_string(&current_time),am_pm); // 04:25:41 PM
 #else
 		lcd_print_string(time_to_string(&current_time));
 		lcd_print_string(am_pm);
 #endif
 	}else{
 #ifndef PRINT_LCD
-		printf("Current time = %s\n",time_to_string(&current_time)); // 04:25:41
+		printf("Current time = %s\n\r",time_to_string(&current_time)); // 04:25:41
 #else
 		lcd_print_string(time_to_string(&current_time));
 #endif
 	}
 
 #ifndef PRINT_LCD
-	printf("Current date = %s <%s>\n",date_to_string(&current_date), get_day_of_week(current_date.day));
+	printf("Current date = %s <%s>\n\r",date_to_string(&current_date), get_day_of_week(current_date.day));
 #else
 	lcd_set_cursor(2, 1);
 	lcd_print_string(date_to_string(&current_date));
@@ -162,7 +162,7 @@ int main(void) {
     // Main loop
     while (1) 
 	{
-		Delay_ms(1000);
+		Delay_ms(300);
 		Show_timendate();
     }
     return 0;
@@ -179,7 +179,7 @@ void Show_timendate(void)
 	if(current_time.time_format != TIME_FORMAT_24HRS){
 		am_pm = (current_time.time_format) ? "PM" : "AM";
 #ifndef PRINT_LCD
-		printf("Current time = %s %s\n",time_to_string(&current_time),am_pm); // 04:25:41 PM
+		printf("Current time = %s %s\n\r",time_to_string(&current_time),am_pm); // 04:25:41 PM
 #else
 		lcd_set_cursor(1, 1);
 		lcd_print_string(time_to_string(&current_time));
@@ -188,7 +188,7 @@ void Show_timendate(void)
 
 	}else{
 #ifndef PRINT_LCD
-		printf("Current time = %s\n",time_to_string(&current_time)); // 04:25:41
+		printf("Current time = %s\n\r",time_to_string(&current_time)); // 04:25:41
 #else
 		lcd_set_cursor(1, 1);
 		lcd_print_string(time_to_string(&current_time));
@@ -198,7 +198,7 @@ void Show_timendate(void)
 	ds1307_get_current_date(&current_date);
 
 #ifndef PRINT_LCD
-	printf("Current date = %s <%s>\n",date_to_string(&current_date), get_day_of_week(current_date.day));
+	printf("Current date = %s <%s>\n\r",date_to_string(&current_date), get_day_of_week(current_date.day));
 #else
 	lcd_set_cursor(2, 1);
 	lcd_print_string(date_to_string(&current_date));
