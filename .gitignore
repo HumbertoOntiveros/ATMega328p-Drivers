@@ -1,4 +1,5 @@
-# Object files generated in drivers/src and src
+# Object files generated in bsp/, drivers/src and src
+bsp/*.o
 drivers/src/*.o
 src/*.o
 
