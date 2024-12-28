@@ -44,10 +44,17 @@ static void mdelay(uint32_t cnt)
  * @return        - None
  *
  * @Note          - This is a blocking delay, implemented using a busy-wait loop.
+ *                  Assumes ATmega328P running at 16 MHz.
  */
 static void udelay(uint32_t cnt)
 {
-	for(uint32_t i=0 ; i < (cnt * 1); i++);
+    // Each iteration of this loop takes 4 clock cycles on a 16 MHz CPU
+    // Calculate the total number of iterations required for the delay
+    uint32_t iterations = (cnt * 16) / 4;
+
+    while (iterations--) {
+        __asm__ __volatile__("nop"); // Assembly NOP for precise timing
+    }
 }
 
 /*********************************************************************
