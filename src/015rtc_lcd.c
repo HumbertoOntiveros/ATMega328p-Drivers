@@ -5,8 +5,8 @@
  * Author : JESUS HUMBERTO ONTIVEROS MAYORQUIN
  *
  * Description:
- * Briefly describe the example's functionality, key configurations,
- * and expected outcomes for user clarity.
+ * Demonstrates real-time clock (RTC) integration with an ATmega328P to display time 
+ * and date via UART or LCD. Supports 12/24-hour formats and real-time updates.
  *
  */
 #include <stdio.h>
