@@ -9,7 +9,7 @@
  * and expected outcomes for user clarity.
  *
  */
-
+#include <stdio.h>
 #include "lcd.h"
 #include "ds1307.h"
 
@@ -18,7 +18,6 @@
 
 #ifndef PRINT_LCD 
 
-#include <stdio.h>
 #define F_CPU 16000000UL
 #define BAUD 9600
 #define MY_UBRR F_CPU/16/BAUD-1
@@ -26,6 +25,8 @@ extern uart_stdout;
 void UART_Init(unsigned int ubrr);
 
 #endif
+
+void Show_timendate(void);
 
 void Delay_ms(uint32_t ms)
 {
@@ -108,7 +109,7 @@ int main(void) {
 	lcd_print_string("RTC Test...");
 
 
-	delay_ms(2000);
+	Delay_ms(2000);
 
 	lcd_display_clear();
 	lcd_display_return_home();
@@ -206,8 +207,8 @@ void Show_timendate(void)
 	lcd_print_string(get_day_of_week(current_date.day));
 	lcd_print_char('>');
 #endif
-
 }
+
 /*
  * MIT License
  *
