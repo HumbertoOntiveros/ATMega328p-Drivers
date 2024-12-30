@@ -23,13 +23,13 @@
  * Hardware connections and pin definitions for LCD interface 
  */
 #define LCD_GPIO_PORT  GPIOD
-#define LCD_GPIO_RS	   PIN0
-#define LCD_GPIO_RW	   PIN1
-#define LCD_GPIO_EN	   PIN2
-#define LCD_GPIO_D4	   PIN3
-#define LCD_GPIO_D5	   PIN4
-#define LCD_GPIO_D6	   PIN5
-#define LCD_GPIO_D7	   PIN6
+#define LCD_GPIO_RS	   PIN1
+#define LCD_GPIO_RW	   PIN2
+#define LCD_GPIO_EN	   PIN3
+#define LCD_GPIO_D4	   PIN4
+#define LCD_GPIO_D5	   PIN5
+#define LCD_GPIO_D6	   PIN6
+#define LCD_GPIO_D7	   PIN7
 
 /*
  * LCD Control Commands
