@@ -12,9 +12,9 @@ LDFLAGS          = -mmcu=atmega328p
 UPLOAD_PROTOCOL  ?= arduino                # Change this according to your programmer
 UPLOAD_PORT      ?= COM8                   # Change this to your programming port (e.g., COM3)
 UPLOAD_BAUD      ?= 115200                 # Change this to the appropriate baud rate
-TARGET_LSS       ?= 015rtc_lcd.lss # Target in .lss format
-TARGET_HEX       ?= 015rtc_lcd.hex # Target in .hex format
-TARGET_ELF       ?= 015rtc_lcd.elf # Target in .elf format
+TARGET_LSS       ?= 016serial_time_sync.lss # Target in .lss format
+TARGET_HEX       ?= 016serial_time_sync.hex # Target in .hex format
+TARGET_ELF       ?= 016serial_time_sync.elf # Target in .elf format
 
 # Directories
 SRC_DIR          = drivers/src
@@ -34,6 +34,7 @@ OBJS += $(SRC_DIR)/atmega328p_gpio.o
 
 # Targets
 all:	000pilot_example.elf \
+        016serial_time_sync.elf \
         015rtc_lcd.elf \
         014uart_case.elf \
         013uart_tx.elf \
@@ -50,6 +51,7 @@ all:	000pilot_example.elf \
 		002led_button_toggle.elf \
 		001led_toggle.elf 
 	@echo "Build complete for the following examples:"
+	@echo " - 016serial_time_sync"
 	@echo " - 015rtc_lcd"
 	@echo " - 014uart_case"
 	@echo " - 013uart_tx"
@@ -81,6 +83,14 @@ $(BSP_DIR)/%.o: $(BSP_DIR)/%.c $(BSP_DIR)/%.h
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/%.h
 	@echo "Compiling driver source: $<"
 	$(CC) $(CFLAGS) -c -I$(INC_DIR) -o $@ $<
+
+#  Build 016serial_time_sync example
+016serial_time_sync.elf: $(EXAMPLES_DIR)/016serial_time_sync.o $(OBJS)
+	@echo "Linking 016serial_time_sync.elf..."
+	$(CC) $(LDFLAGS) -o $@ $^
+	@echo "Creating HEX file for 016serial_time_sync..."
+	$(OBJCOPY) 016serial_time_sync.elf 016serial_time_sync.hex -O ihex
+	@echo "Build complete: 016serial_time_sync.elf"
 
 #  Build 015rtc_lcd example
 015rtc_lcd.elf: $(EXAMPLES_DIR)/015rtc_lcd.o $(OBJS)
