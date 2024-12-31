@@ -138,7 +138,7 @@ int main(void) {
     // Main loop
     while (1) 
 	{
-		Delay_ms(300);
+		Delay_ms(100);
 		Show_timendate();
     }
     return 0;
@@ -149,7 +149,7 @@ void Sync_time_and_date(void) {
     RTC_date_t sync_date;
 
     char buffer[30];
-    lcd_print_string("SYNC_REQUEST\n"); // Request synchronization
+    lcd_print_string("SYNC_REQUEST"); // Request synchronization
     
     // Wait for response (data will come via UART)
     if (fgets(buffer, sizeof(buffer), stdin)) {
